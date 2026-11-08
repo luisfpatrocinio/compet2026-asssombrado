@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsSsombrado — 1º Lugar ComPETção 2026 | Colégio CEV</title>
+  <meta name="description" content="Showcase oficial do jogo AsSsombrado. Campeão do 1º Lugar na ComPETção 2026 (Nível Pleno) - Engenharia Elétrica UFPI. Controle físico com lanterna real e ESP32 conectado à Godot Engine.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="AsSsombrado — Campeão ComPETção 2026 (UFPI)">
+  <meta property="og:description" content="Lanterna física real transformada em controle de videogame via ESP32 BLE Gamepad e Godot Engine. Equipe Catavento - Colégio CEV.">
+  <meta property="og:image" content="assets/AsSsombradoLogo.png">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/ghost_normal.png">
+
+  <!-- Google Fonts: Press Start 2P, VT323, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            deep: '#030712',
+            void: '#050814',
+            surface: '#0a0f26',
+            surfaceLight: '#11183c',
+            neonCyan: '#38bdf8',
+            neonPink: '#ec4899',
+            neonGreen: '#10b981',
+            neonAmber: '#f59e0b',
+            toxicPurple: '#8b5cf6'
+          },
+          fontFamily: {
+            arcade: ['"Press Start 2P"', 'monospace'],
+            crt: ['"VT323"', 'monospace'],
+            code: ['"JetBrains Mono"', 'monospace']
+          },
+          animation: {
+            'float': 'floating 3.5s ease-in-out infinite',
+            'float-slow': 'floating 5s ease-in-out infinite',
+            'pulse-fast': 'pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'glitch': 'glitch 2s infinite',
+            'flicker': 'flicker 0.15s infinite'
+          },
+          keyframes: {
+            floating: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' }
+            },
+            glitch: {
+              '0%, 100%': { transform: 'translate(0)' },
+              '20%': { transform: 'translate(-2px, 2px)' },
+              '40%': { transform: 'translate(-2px, -2px)' },
+              '60%': { transform: 'translate(2px, 2px)' },
+              '80%': { transform: 'translate(2px, -2px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estética Pixel-Art nítida */
+    .pixelated {
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+
+    /* Scanlines CRT de TV Retrô */
+    .crt-overlay {
+      pointer-events: none;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.45) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+      z-index: 40;
+    }
+
+    /* Brilho de fósforo CRT nas bordas */
+    .crt-vignette {
+      pointer-events: none;
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Lanterna interativa no Mouse */
+    #flashlight-mask {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      transition: opacity 0.4s ease;
+      background: radial-gradient(
+        circle var(--beam-size, 260px) at var(--cursor-x, 50vw) var(--cursor-y, 50vh),
+        rgba(240, 248, 255, 0.02) 0%,
+        rgba(5, 8, 20, 0.75) 55%,
+        rgba(3, 5, 14, 0.94) 85%,
+        rgba(2, 3, 10, 0.98) 100%
+      );
+    }
+
+    /* Quando a luz da sala está acesa */
+    body.light-mode #flashlight-mask {
+      opacity: 0 !important;
+    }
+
+    /* Halo suave da lanterna */
+    #flashlight-halo {
+      pointer-events: none;
+      position: fixed;
+      width: calc(var(--beam-size, 260px) * 2);
+      height: calc(var(--beam-size, 260px) * 2);
+      left: calc(var(--cursor-x, 50vw) - var(--beam-size, 260px));
+      top: calc(var(--cursor-y, 50vh) - var(--beam-size, 260px));
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(236, 72, 153, 0.04) 40%, transparent 70%);
+      z-index: 36;
+      transition: opacity 0.3s ease;
+    }
+
+    body.light-mode #flashlight-halo {
+      opacity: 0 !important;
+    }
+
+    /* Brilho Neon */
+    .neon-border-cyan {
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.35), inset 0 0 15px rgba(56, 189, 248, 0.15);
+    }
+    .neon-border-pink {
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.4), inset 0 0 15px rgba(236, 72, 153, 0.2);
+    }
+    .neon-text-glow {
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.7), 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+    .neon-text-pink-glow {
+      text-shadow: 0 0 10px rgba(236, 72, 153, 0.7), 0 0 20px rgba(236, 72, 153, 0.4);
+    }
+
+    /* Scrollbar retrô */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030712;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border: 1px solid #38bdf8;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38bdf8;
+    }
+
+    /* Código custom styling */
+    pre code {
+      tab-size: 2;
+    }
+  </style>
+</head>
+
+<body class="bg-void text-slate-200 font-code selection:bg-neonPink selection:text-white min-h-screen relative overflow-x-hidden">
+
+  <!-- OVERLAYS: Efeito Lanterna e CRT TV -->
+  <div id="flashlight-halo"></div>
+  <div id="flashlight-mask"></div>
+  <div class="fixed inset-0 crt-overlay"></div>
+  <div class="fixed inset-0 crt-vignette"></div>
+
+  <!-- HEADER FIXO: Status da Feira & Botão de Luz Acesa -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-void/90 backdrop-blur-md border-b border-cyan-900/50 px-4 py-2.5 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      
+      <!-- Brand & Badge -->
+      <div class="flex items-center gap-3">
+        <a href="#hero" class="flex items-center gap-2 group">
+          <img src="assets/ghost_normal.png" alt="Ghost" class="w-7 h-7 pixelated animate-float">
+          <span class="font-arcade text-xs md:text-sm text-neonCyan tracking-wider group-hover:text-neonPink transition-colors">
+            As<span class="text-neonPink">S</span>sombrado
+          </span>
+        </a>
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/40 text-amber-300 font-arcade text-[10px]">
+          <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+          🥇 1º LUGAR UFPI
+        </span>
+      </div>
+
+      <!-- Links Rápidos e Botão da Lanterna -->
+      <div class="flex items-center gap-2 md:gap-4">
+        <nav class="hidden md:flex items-center gap-4 text-xs font-arcade">
+          <a href="#hardware" class="text-slate-400 hover:text-neonCyan transition-colors">Hardware</a>
+          <a href="#mecanicas" class="text-slate-400 hover:text-neonPink transition-colors">Mecânica</a>
+          <a href="#simulador" class="text-slate-400 hover:text-neonGreen transition-colors">Simulador</a>
+          <a href="#codigo" class="text-slate-400 hover:text-cyan-300 transition-colors">Código</a>
+          <a href="#qrcode" class="text-slate-400 hover:text-amber-300 transition-colors">Estande</a>
+        </nav>
+
+        <!-- Botão Acessibilidade Lanterna -->
+        <button id="toggle-light-btn" onclick="toggleLightMode()" 
+          class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-neonCyan/60 bg-cyan-950/60 hover:bg-neonCyan/20 text-neonCyan font-arcade text-[10px] md:text-xs transition-all shadow-lg hover:shadow-cyan-500/30 active:scale-95"
+          title="Atalho: tecla 'L'">
+          <span id="light-icon" class="text-base">🔦</span>
+          <span id="light-text">MODO LANTERNA</span>
+          <span class="hidden lg:inline text-[9px] px-1 py-0.5 bg-cyan-900/60 rounded border border-cyan-700/50 text-cyan-200">[L]</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 1: HERO SECTION (O CAMPEÃO)          -->
+  <!-- ========================================== -->
+  <section id="hero" class="relative pt-28 pb-20 md:pt-36 md:pb-28 px-4 overflow-hidden border-b border-cyan-950">
+    <!-- Imagem de Fundo Quarto Escuro do Jogo -->
+    <div class="absolute inset-0 z-0 opacity-25">
+      <img src="assets/quarto_escuro.jpg" alt="Cenário Quarto Escuro" class="w-full h-full object-cover filter brightness-75 contrast-125">
+      <div class="absolute inset-0 bg-gradient-to-b from-void via-void/80 to-void"></div>
+    </div>
+
+    <!-- Fantasmas Secretos no Fundo (Revelados pela Lanterna) -->
+    <div class="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+      <img src="assets/ghost_lento.png" alt="Fantasma escondido" class="absolute top-1/4 left-8 md:left-24 w-12 h-12 pixelated opacity-30 animate-float-slow filter hue-rotate-90">
+      <img src="assets/ghost_rapido.png" alt="Fantasma escondido" class="absolute top-1/3 right-10 md:right-32 w-14 h-14 pixelated opacity-40 animate-float filter drop-shadow-[0_0_12px_#ec4899]">
+      <img src="assets/inimigo_falso.png" alt="Esqueleto escondido" class="absolute bottom-16 left-1/3 w-12 h-12 pixelated opacity-30 animate-pulse-fast filter drop-shadow-[0_0_15px_#ef4444]">
+    </div>
+
+    <div class="relative z-20 max-w-6xl mx-auto text-center flex flex-col items-center">
+      
+      <!-- Selo de 1º Lugar ComPETção 2026 -->
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 border-2 border-amber-400/80 text-amber-300 font-arcade text-xs md:text-sm tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.45)] mb-8 animate-pulse">
+        <span class="text-base md:text-lg">🥇</span>
+        <span>1º LUGAR — ComPETção 2026</span>
+        <span class="text-amber-200/80 font-mono text-[11px] hidden sm:inline">(UFPI • Categoria Pleno)</span>
+      </div>
+
+      <!-- Logo Oficial do Jogo com Animação Flutuante -->
+      <div class="relative mb-6 max-w-2xl w-full px-4 group">
+        <div class="absolute -inset-4 bg-gradient-to-r from-neonCyan/20 via-neonPink/20 to-neonCyan/20 rounded-2xl blur-xl opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <img src="assets/AsSsombradoLogo.png" alt="AsSsombrado Logo Oficial" 
+          class="relative w-full max-h-48 md:max-h-64 object-contain mx-auto filter drop-shadow-[0_0_25px_rgba(56,189,248,0.5)] animate-float">
+      </div>
+
+      <!-- Subtítulo de Impacto -->
+      <h2 class="text-lg md:text-2xl font-crt text-cyan-200 tracking-wide max-w-3xl mb-6">
+        COMO TRANSFORMAMOS UMA <span class="text-neonCyan font-bold">LANTERNA REAL</span> EM UM <span class="text-neonPink font-bold">CONTROLE DE VIDEOGAME</span> FÍSICO CONTRA ASSOMBRAÇÕES DIGITAIS.
+      </h2>
+
+      <p class="text-slate-300 text-sm md:text-base max-w-2xl leading-relaxed mb-8 font-code">
+        Desenvolvido em <strong class="text-white">Godot Engine 4</strong> com integração física em hardware via microcontrolador <strong class="text-white">ESP32</strong>, sensores ópticos <strong class="text-neonCyan">LDR</strong> em divisor de tensão e emulação nativa de controle <strong class="text-neonPink">Bluetooth BLE Gamepad</strong>.
+      </p>
+
+      <!-- Créditos Oficiais em Destaque -->
+      <div class="w-full max-w-3xl p-4 md:p-6 rounded-xl bg-surface/90 border border-cyan-900/60 shadow-2xl backdrop-blur-md mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+          
+          <div class="border-b md:border-b-0 md:border-r border-slate-800 pb-3 md:pb-0 md:pr-4">
+            <span class="text-[10px] font-arcade text-neonCyan block mb-1">🎮 EQUIPE CATAVENTO</span>
+            <p class="text-sm font-bold text-white">Mayan Sousa</p>
+            <p class="text-sm font-bold text-white">Ravi Pires</p>
+            <p class="text-sm font-bold text-white">Rubuão Alves</p>
+          </div>
+
+          <div class="border-b md:border-b-0 md:border-r border-slate-800 pb-3 md:pb-0 md:pr-4">
+            <span class="text-[10px] font-arcade text-neonPink block mb-1">👨‍🏫 PROFESSOR ORIENTADOR</span>
+            <p class="text-sm font-bold text-white">Luis Felipe Patrocinio</p>
+            <p class="text-xs text-slate-400 mt-1">Robótica & Sistemas Embarcados</p>
+          </div>
+
+          <div>
+            <span class="text-[10px] font-arcade text-amber-400 block mb-1">🏛️ INSTITUIÇÃO & EVENTO</span>
+            <p class="text-sm font-bold text-white">Colégio CEV</p>
+            <p class="text-xs text-slate-400 mt-1">Feira de Robótica InovaCEV • 2026</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4 font-arcade text-xs">
+        <a href="#simulador" class="px-5 py-3 rounded-lg bg-neonPink hover:bg-pink-600 text-white font-bold transition-all shadow-[0_0_20px_rgba(236,72,153,0.5)] hover:scale-105 active:scale-95 flex items-center gap-2">
+          <span>🔦</span> TESTAR MIRA NO SIMULADOR
+        </a>
+        <a href="#hardware" class="px-5 py-3 rounded-lg bg-surfaceLight hover:bg-cyan-950 border border-neonCyan text-neonCyan transition-all shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2">
+          <span>⚡</span> FLUXOGRAMA DE ENGENHARIA
+        </a>
+        <a href="https://github.com/rubual/compet2026-asssombrado" target="_blank" rel="noopener noreferrer" class="px-5 py-3 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition-all hover:text-white flex items-center gap-2">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          REPOSITÓRIO GITHUB
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 2: FLUXOGRAMA DE ENGENHARIA          -->
+  <!-- ========================================== -->
+  <section id="hardware" class="py-20 px-4 bg-void relative border-b border-cyan-950">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="text-center mb-14">
+        <span class="font-arcade text-xs text-neonPink tracking-widest block mb-2">[ ARQUITETURA DE HARDWARE ]</span>
+        <h2 class="font-arcade text-xl md:text-3xl text-white neon-text-glow mb-4">DO MUNDO FÍSICO AO DIGITAL</h2>
+        <p class="text-slate-400 font-code text-sm max-w-2xl mx-auto">
+          Clique ou passe o mouse nos nós do diagrama para entender a engenharia por trás do circuito e como vencemos os desafios de hardware do ESP32.
+        </p>
+      </div>
+
+      <!-- Diagrama Horizontal Interativo (Scroll horizontal no mobile) -->
+      <div class="relative overflow-x-auto pb-6">
+        <div class="flex items-center justify-between min-w-[850px] gap-2 p-4 bg-surface/60 rounded-2xl border border-cyan-900/60 shadow-xl">
+          
+          <!-- NÓ 1: Lanterna Física -->
+          <div onclick="selectFlowStep(1)" id="step-node-1" 
+            class="flow-node active cursor-pointer flex-1 p-4 rounded-xl bg-slate-900/90 border-2 border-neonCyan text-center transition-all hover:scale-105 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+            <div class="text-3xl mb-2 animate-bounce">🔦</div>
+            <span class="font-arcade text-[10px] text-neonCyan block mb-1">PASSO 1</span>
+            <h4 class="font-bold text-sm text-white">Lanterna Física</h4>
+            <span class="text-[11px] text-slate-400 font-mono">Facho de Luz Real</span>
+          </div>
+
+          <!-- Conector 1-2 -->
+          <div class="text-cyan-500 font-bold text-xl px-1 select-none animate-pulse">➔</div>
+
+          <!-- NÓ 2: Sensores LDR -->
+          <div onclick="selectFlowStep(2)" id="step-node-2" 
+            class="flow-node cursor-pointer flex-1 p-4 rounded-xl bg-slate-900/90 border border-slate-700 text-center transition-all hover:border-amber-400 hover:scale-105">
+            <div class="text-3xl mb-2">☀️</div>
+            <span class="font-arcade text-[10px] text-amber-400 block mb-1">PASSO 2</span>
+            <h4 class="font-bold text-sm text-white">3x LDRs + 10kΩ</h4>
+            <span class="text-[11px] text-slate-400 font-mono">Divisor de Tensão</span>
+          </div>
+
+          <!-- Conector 2-3 -->
+          <div class="text-cyan-500 font-bold text-xl px-1 select-none animate-pulse">➔</div>
+
+          <!-- NÓ 3: ESP32 -->
+          <div onclick="selectFlowStep(3)" id="step-node-3" 
+            class="flow-node cursor-pointer flex-1 p-4 rounded-xl bg-slate-900/90 border border-slate-700 text-center transition-all hover:border-purple-400 hover:scale-105">
+            <div class="text-3xl mb-2">🧠</div>
+            <span class="font-arcade text-[10px] text-purple-400 block mb-1">PASSO 3</span>
+            <h4 class="font-bold text-sm text-white">ESP32 (15, 2, 4)</h4>
+            <span class="text-[11px] text-slate-400 font-mono">Leitura Digital</span>
+          </div>
+
+          <!-- Conector 3-4 -->
+          <div class="text-cyan-500 font-bold text-xl px-1 select-none animate-pulse">➔</div>
+
+          <!-- NÓ 4: BLE Gamepad -->
+          <div onclick="selectFlowStep(4)" id="step-node-4" 
+            class="flow-node cursor-pointer flex-1 p-4 rounded-xl bg-slate-900/90 border border-slate-700 text-center transition-all hover:border-neonPink hover:scale-105">
+            <div class="text-3xl mb-2">📡</div>
+            <span class="font-arcade text-[10px] text-neonPink block mb-1">PASSO 4</span>
+            <h4 class="font-bold text-sm text-white">BLE Gamepad</h4>
+            <span class="text-[11px] text-slate-400 font-mono">HID Bluetooth</span>
+          </div>
+
+          <!-- Conector 4-5 -->
+          <div class="text-cyan-500 font-bold text-xl px-1 select-none animate-pulse">➔</div>
+
+          <!-- NÓ 5: Godot Engine -->
+          <div onclick="selectFlowStep(5)" id="step-node-5" 
+            class="flow-node cursor-pointer flex-1 p-4 rounded-xl bg-slate-900/90 border border-slate-700 text-center transition-all hover:border-neonCyan hover:scale-105">
+            <div class="text-3xl mb-2 flex items-center justify-center">
+              <img src="assets/godot_icon.svg" alt="Godot" class="w-8 h-8">
+            </div>
+            <span class="font-arcade text-[10px] text-neonCyan block mb-1">PASSO 5</span>
+            <h4 class="font-bold text-sm text-white">Godot Engine</h4>
+            <span class="text-[11px] text-slate-400 font-mono">Input & Gameplay</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Painel Dinâmico de Explicação Técnica do Passo -->
+      <div id="flow-explanation" class="mt-6 p-6 rounded-2xl bg-surfaceLight/80 border border-cyan-800/80 shadow-2xl transition-all">
+        <div class="flex items-start gap-4">
+          <div id="flow-badge-icon" class="p-3 rounded-xl bg-cyan-950 border border-cyan-500 text-3xl">🔦</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2 flex-wrap">
+              <span id="flow-step-tag" class="font-arcade text-xs px-2.5 py-1 rounded bg-neonCyan/20 text-neonCyan border border-neonCyan/40">PASSO 1 DE 5</span>
+              <h3 id="flow-title" class="font-arcade text-base md:text-lg text-white">LANTERNA FÍSICA COMO GATILHO</h3>
+            </div>
+            <p id="flow-desc" class="text-slate-300 text-sm md:text-base leading-relaxed mb-3 font-code">
+              O jogador segura uma lanterna convencional no mundo real. Ao mirar nos pontos físicos marcados na moldura do estande (Esquerda, Centro e Direita), o facho de luz incidente altera a resistência dos sensores fotoelétricos LDR.
+            </p>
+            <div id="flow-tech-note" class="p-3 rounded-lg bg-black/50 border-l-4 border-neonCyan text-xs text-cyan-200 font-code">
+              💡 <strong>Dica de UX:</strong> A lanterna cria uma ponte tangível entre a tensão do jogador e as sombras na tela, transformando o reflexo físico em mecânica de sobrevivência.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 3: A MECÂNICA DO JOGO                -->
+  <!-- ========================================== -->
+  <section id="mecanicas" class="py-20 px-4 bg-void relative border-b border-cyan-950">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="text-center mb-14">
+        <span class="font-arcade text-xs text-neonCyan tracking-widest block mb-2">[ REGRAS DE SOBREVIVÊNCIA ]</span>
+        <h2 class="font-arcade text-xl md:text-3xl text-white neon-text-glow mb-4">A MECÂNICA DO QUARTO ESCURO</h2>
+        <p class="text-slate-400 font-code text-sm max-w-2xl mx-auto">
+          Fantasmas e aparições surgem nas 3 direções da sala. O jogador precisa mirar a lanterna com precisão cirúrgica antes de ser atacado. Mas cuidado com as armadilhas!
+        </p>
+      </div>
+
+      <!-- As 3 Posições Físicas vs Virtuais -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        
+        <!-- Esquerda -->
+        <div class="p-5 rounded-xl bg-surface/80 border border-cyan-900/60 hover:border-neonCyan transition-all group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-arcade text-xs text-neonCyan">PORTA ESQUERDA</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-700/50 font-mono">GPIO 15 • BOTÃO 1</span>
+          </div>
+          <p class="text-slate-300 text-xs font-code leading-relaxed mb-3">
+            Corresponde ao sensor LDR da esquerda da tela. Dispara a ação de iluminar o canto esquerdo do quarto escuro via tecla <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-600 text-neonCyan font-mono">A</kbd> ou botão do gamepad.
+          </p>
+          <div class="h-1 w-full bg-cyan-950 rounded-full overflow-hidden">
+            <div class="h-full bg-neonCyan w-1/3 group-hover:w-full transition-all duration-500"></div>
+          </div>
+        </div>
+
+        <!-- Centro -->
+        <div class="p-5 rounded-xl bg-surface/80 border border-cyan-900/60 hover:border-amber-400 transition-all group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-arcade text-xs text-amber-400">CORREDOR CENTRO</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-700/50 font-mono">GPIO 2 • BOTÃO 2</span>
+          </div>
+          <p class="text-slate-300 text-xs font-code leading-relaxed mb-3">
+            Corresponde ao sensor LDR central. Ilumina o fundo do quarto, onde os fantasmas se aproximam frontalmente via tecla <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-600 text-amber-400 font-mono">W</kbd>.
+          </p>
+          <div class="h-1 w-full bg-amber-950 rounded-full overflow-hidden">
+            <div class="h-full bg-amber-400 w-1/3 group-hover:w-full transition-all duration-500"></div>
+          </div>
+        </div>
+
+        <!-- Direita -->
+        <div class="p-5 rounded-xl bg-surface/80 border border-cyan-900/60 hover:border-neonPink transition-all group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-arcade text-xs text-neonPink">JANELA DIREITA</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-pink-950 text-pink-300 border border-pink-700/50 font-mono">GPIO 4 • BOTÃO 3</span>
+          </div>
+          <p class="text-slate-300 text-xs font-code leading-relaxed mb-3">
+            Corresponde ao sensor LDR da direita. Protege a janela assombrada da mansão via tecla <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-600 text-neonPink font-mono">D</kbd> ou botão do gamepad.
+          </p>
+          <div class="h-1 w-full bg-pink-950 rounded-full overflow-hidden">
+            <div class="h-full bg-neonPink w-1/3 group-hover:w-full transition-all duration-500"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Os Inimigos e o Grande Alerta: Inimigo Falso -->
+      <div class="mb-10 text-center">
+        <h3 class="font-arcade text-lg md:text-2xl text-white mb-2">GALERIA DE ESPECTROS</h3>
+        <p class="text-slate-400 text-sm font-code">Conheça as entidades que assombram as noites do jogo:</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        
+        <!-- Fantasma Normal -->
+        <div class="p-6 rounded-2xl bg-surface/90 border border-cyan-800/60 hover:border-cyan-400 transition-all text-center group flex flex-col items-center">
+          <div class="w-24 h-24 mb-4 flex items-center justify-center bg-cyan-950/50 rounded-xl border border-cyan-700/40 p-2 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] transition-all">
+            <img src="assets/ghost_normal.png" alt="Fantasma Normal" class="w-16 h-16 pixelated animate-float">
+          </div>
+          <span class="font-arcade text-xs text-neonCyan mb-1">FANTASMA COMUM</span>
+          <h4 class="font-bold text-white mb-2">Espectro Azul</h4>
+          <p class="text-slate-300 text-xs font-code leading-relaxed">
+            A aparição mais frequente da noite. Surge na névoa e exige que você aponte a lanterna na direção certa para exorcizá-lo com a luz.
+          </p>
+        </div>
+
+        <!-- Fantasma Rápido -->
+        <div class="p-6 rounded-2xl bg-surface/90 border border-purple-800/60 hover:border-purple-400 transition-all text-center group flex flex-col items-center">
+          <div class="w-24 h-24 mb-4 flex items-center justify-center bg-purple-950/50 rounded-xl border border-purple-700/40 p-2 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all">
+            <img src="assets/ghost_rapido.png" alt="Fantasma Rápido" class="w-16 h-16 pixelated animate-float-slow filter hue-rotate-60">
+          </div>
+          <span class="font-arcade text-xs text-purple-400 mb-1">FANTASMA VELOZ</span>
+          <h4 class="font-bold text-white mb-2">Sombra Relâmpago</h4>
+          <p class="text-slate-300 text-xs font-code leading-relaxed">
+            Move-se com velocidade assustadora! Requer reflexos instantâneos e agilidade motora imediata com a lanterna física antes do bote.
+          </p>
+        </div>
+
+        <!-- Fantasma Lento -->
+        <div class="p-6 rounded-2xl bg-surface/90 border border-emerald-800/60 hover:border-emerald-400 transition-all text-center group flex flex-col items-center">
+          <div class="w-24 h-24 mb-4 flex items-center justify-center bg-emerald-950/50 rounded-xl border border-emerald-700/40 p-2 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all">
+            <img src="assets/ghost_lento.png" alt="Fantasma Lento" class="w-16 h-16 pixelated animate-float">
+          </div>
+          <span class="font-arcade text-xs text-emerald-400 mb-1">FANTASMA ENGANOSO</span>
+          <h4 class="font-bold text-white mb-2">Alma Errante</h4>
+          <p class="text-slate-300 text-xs font-code leading-relaxed">
+            Aproxima-se em ritmo arrastado. Parece fácil de eliminar, mas causa distração fatal enquanto outros fantasmas emergem nos outros lados!
+          </p>
+        </div>
+
+      </div>
+
+      <!-- CARD DE DESTAQUE: A PEGADINHA (INIMIGO FALSO) -->
+      <div class="relative p-6 md:p-8 rounded-2xl bg-gradient-to-r from-red-950/70 via-rose-950/60 to-red-950/70 border-2 border-red-500/90 shadow-[0_0_35px_rgba(239,68,68,0.35)] overflow-hidden">
+        
+        <div class="absolute -right-8 -bottom-8 opacity-15 pointer-events-none">
+          <img src="assets/inimigo_falso.png" alt="Falso" class="w-64 h-64 pixelated">
+        </div>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+          
+          <div class="flex-shrink-0 flex flex-col items-center p-4 bg-black/60 rounded-xl border border-red-500/60 shadow-lg">
+            <img src="assets/inimigo_falso.png" alt="Inimigo Falso" class="w-20 h-20 pixelated animate-pulse filter drop-shadow-[0_0_12px_#ef4444]">
+            <span class="mt-2 font-arcade text-[10px] text-red-400 uppercase tracking-wider">⚠️ Inimigo Falso</span>
+          </div>
+
+          <div class="flex-1 text-center md:text-left">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-600/30 text-red-200 border border-red-500 font-arcade text-xs mb-3">
+              <span>🚨</span> A PEGADINHA: NEM TUDO DEVE SER ILUMINADO!
+            </div>
+            
+            <h3 class="font-arcade text-xl md:text-2xl text-white mb-3 tracking-wide">
+              APONTOU A LANTERNA PRO ESQUELETO = <span class="text-red-400 neon-text-pink-glow">DERROTA IMEDIATA!</span>
+            </h3>
+            
+            <p class="text-slate-200 text-sm md:text-base font-code leading-relaxed mb-4">
+              Ao contrário dos fantasmas comuns que precisam da luz para serem derrotados, o <strong class="text-red-300">Inimigo Falso (Esqueleto)</strong> é uma armadilha psicológica! Se o jogador atirar a lanterna por impulso ou susto, a tela pisca em vermelho, toca o grito assustador do jumpscare e você perde na hora: <span class="text-red-400 font-bold">"PEGOU NO CATAVENTO!"</span>.
+            </p>
+
+            <div class="p-3 bg-black/40 rounded-lg border-l-4 border-red-500 text-xs text-red-200 font-code">
+              🛡️ <strong>Como Sobreviver:</strong> Mantenha o sangue-frio! Ao avistar o Inimigo Falso, <em>não aponte a lanterna nele</em>. Espere com a luz apagada ou voltada para outro canto até que ele desapareça por conta própria.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 4: SIMULADOR INTERATIVO DE MIRA      -->
+  <!-- ========================================== -->
+  <section id="simulador" class="py-20 px-4 bg-void relative border-b border-cyan-950">
+    <div class="max-w-4xl mx-auto">
+      
+      <div class="text-center mb-10">
+        <span class="font-arcade text-xs text-neonGreen tracking-widest block mb-2">[ ARCADE INTERATIVO NO NAVEGADOR ]</span>
+        <h2 class="font-arcade text-xl md:text-3xl text-white mb-3">SIMULADOR DE LANTERNA DO ESTANDE</h2>
+        <p class="text-slate-400 font-code text-sm max-w-xl mx-auto">
+          Experimente a mecânica do jogo aqui mesmo na página! Clique nos botões ou aperte <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-600 text-neonCyan font-mono">A</kbd>, <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-600 text-amber-400 font-mono">W</kbd> ou <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-600 text-neonPink font-mono">D</kbd> para iluminar os alvos. Cuidado com o falso!
+        </p>
+      </div>
+
+      <!-- Console / TV CRT do Jogo -->
+      <div class="p-6 md:p-8 rounded-3xl bg-surface border-4 border-cyan-950 shadow-[0_0_40px_rgba(5,8,20,0.9)] relative">
+        
+        <!-- Top Bar da Tela -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 animate-ping"></span>
+            <span class="font-arcade text-xs text-slate-300">ESTANDE-SIM: <span class="text-neonCyan">ATIVO</span></span>
+          </div>
+          <div class="flex items-center gap-4 font-arcade text-xs">
+            <span class="text-slate-400">PONTOS: <span id="sim-score" class="text-neonGreen">0</span></span>
+            <button onclick="resetSim()" class="text-[10px] text-slate-400 hover:text-white underline">Reiniciar</button>
+          </div>
+        </div>
+
+        <!-- Tela Principal do Quarto Escuro -->
+        <div id="sim-screen" class="relative h-64 md:h-80 rounded-2xl bg-black overflow-hidden border-2 border-slate-800 flex items-center justify-around px-4 transition-all">
+          
+          <!-- Flash de Luz Visual -->
+          <div id="sim-flash" class="absolute inset-0 bg-yellow-100 opacity-0 pointer-events-none transition-opacity duration-150 z-30"></div>
+
+          <!-- Jumpscare Pop-up -->
+          <div id="sim-jumpscare" class="absolute inset-0 bg-red-950/95 z-40 hidden flex-col items-center justify-center p-4 text-center">
+            <img src="assets/jumpscare.png" alt="Jumpscare" class="w-32 h-32 object-contain pixelated mb-3 animate-glitch">
+            <h3 class="font-arcade text-lg md:text-xl text-red-500 mb-1">PEGOU NO CATAVENTO!</h3>
+            <p class="font-code text-xs text-slate-300 mb-4">Você apontou a lanterna para o Inimigo Falso!</p>
+            <button onclick="resetSim()" class="px-4 py-2 rounded bg-red-600 hover:bg-red-500 font-arcade text-xs text-white">TENTAR NOVAMENTE</button>
+          </div>
+
+          <!-- Posição 1: Esquerda -->
+          <div id="sim-slot-esquerda" class="relative z-20 flex flex-col items-center justify-center w-28 h-44 rounded-xl border-2 border-dashed border-cyan-900/60 p-2 transition-all">
+            <span class="font-arcade text-[9px] text-cyan-500/70 mb-2">ESQ [A]</span>
+            <div id="sim-target-esquerda" class="w-16 h-16 flex items-center justify-center">
+              <!-- Inimigo gerado via JS -->
+            </div>
+          </div>
+
+          <!-- Posição 2: Centro -->
+          <div id="sim-slot-centro" class="relative z-20 flex flex-col items-center justify-center w-28 h-44 rounded-xl border-2 border-dashed border-amber-900/60 p-2 transition-all">
+            <span class="font-arcade text-[9px] text-amber-500/70 mb-2">CENTRO [W]</span>
+            <div id="sim-target-centro" class="w-16 h-16 flex items-center justify-center">
+              <!-- Inimigo gerado via JS -->
+            </div>
+          </div>
+
+          <!-- Posição 3: Direita -->
+          <div id="sim-slot-direita" class="relative z-20 flex flex-col items-center justify-center w-28 h-44 rounded-xl border-2 border-dashed border-pink-900/60 p-2 transition-all">
+            <span class="font-arcade text-[9px] text-pink-500/70 mb-2">DIR [D]</span>
+            <div id="sim-target-direita" class="w-16 h-16 flex items-center justify-center">
+              <!-- Inimigo gerado via JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Botões Físicos de Disparo (Simulação dos LDRs) -->
+        <div class="grid grid-cols-3 gap-3 md:gap-6 mt-6">
+          <button onclick="triggerFlashlight('esquerda')" 
+            class="py-3 px-2 rounded-xl bg-cyan-950/80 hover:bg-cyan-800 border-2 border-neonCyan text-neonCyan font-arcade text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition-all">
+            <span>🔦 ILUMINAR</span>
+            <span class="text-[10px] text-cyan-300 font-mono">ESQUERDA (A)</span>
+          </button>
+
+          <button onclick="triggerFlashlight('centro')" 
+            class="py-3 px-2 rounded-xl bg-amber-950/80 hover:bg-amber-800 border-2 border-amber-400 text-amber-300 font-arcade text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition-all">
+            <span>🔦 ILUMINAR</span>
+            <span class="text-[10px] text-amber-300 font-mono">CENTRO (W)</span>
+          </button>
+
+          <button onclick="triggerFlashlight('direita')" 
+            class="py-3 px-2 rounded-xl bg-pink-950/80 hover:bg-pink-800 border-2 border-neonPink text-neonPink font-arcade text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-lg active:scale-95 transition-all">
+            <span>🔦 ILUMINAR</span>
+            <span class="text-[10px] text-pink-300 font-mono">DIREITA (D)</span>
+          </button>
+        </div>
+
+        <div class="mt-4 text-center">
+          <p id="sim-feedback" class="text-xs font-arcade text-cyan-300">Pressione A, W ou D ou clique nos botões para ligar a lanterna!</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 5: RAIO-X DO CÓDIGO (UNDER THE HOOD)  -->
+  <!-- ========================================== -->
+  <section id="codigo" class="py-20 px-4 bg-void relative border-b border-cyan-950">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="text-center mb-14">
+        <span class="font-arcade text-xs text-neonCyan tracking-widest block mb-2">[ ENGENHARIA DE SOFTWARE ]</span>
+        <h2 class="font-arcade text-xl md:text-3xl text-white neon-text-glow mb-4">RAIO-X DO CÓDIGO FONTE</h2>
+        <p class="text-slate-400 font-code text-sm max-w-2xl mx-auto">
+          Explore o código real do jogo na Godot Engine e o firmware embarcado em C++ no ESP32 que tornaram este projeto o campeão da ComPETção 2026.
+        </p>
+      </div>
+
+      <!-- Editor de Código com Abas Estilo IDE Retrô -->
+      <div class="rounded-2xl bg-slate-950 border border-cyan-900/80 shadow-2xl overflow-hidden">
+        
+        <!-- Header da IDE (Abas e Bolinhas) -->
+        <div class="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+          
+          <div class="flex items-center gap-3">
+            <!-- Bolinhas retro terminal -->
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+            </div>
+
+            <!-- Abas -->
+            <div class="flex items-center gap-2 ml-4">
+              <button onclick="switchTab('godot')" id="tab-btn-godot" 
+                class="px-3 py-1.5 rounded-lg bg-surfaceLight border border-neonCyan text-neonCyan font-arcade text-[10px] md:text-xs flex items-center gap-2 transition-all">
+                <img src="assets/godot_icon.svg" alt="Godot" class="w-3.5 h-3.5">
+                <span>main.gd (Godot 4)</span>
+              </button>
+
+              <button onclick="switchTab('esp32')" id="tab-btn-esp32" 
+                class="px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700 text-slate-400 hover:text-white font-arcade text-[10px] md:text-xs flex items-center gap-2 transition-all">
+                <span>🧠</span>
+                <span>firmware_esp32.cpp (C++)</span>
+              </button>
+            </div>
+          </div>
+
+          <button onclick="copyCurrentCode()" class="text-xs text-slate-400 hover:text-neonCyan flex items-center gap-1 font-arcade text-[10px]">
+            <span id="copy-text">COPIAR CÓDIGO</span>
+          </button>
+        </div>
+
+        <!-- ABA 1: GODOT (GDSCRIPT) -->
+        <div id="tab-godot" class="p-4 md:p-6 text-xs md:text-sm font-code overflow-x-auto">
+          <div class="text-slate-400 mb-3 text-xs italic">
+            # Trecho real extraído de main.gd: Sistema de verificação da lanterna e a lógica fatal do Inimigo Falso
+          </div>
+          <pre class="text-slate-200 leading-relaxed"><code><span class="text-purple-400">func</span> <span class="text-blue-400">testar_lanterna</span>(direcao):
+	<span class="text-slate-500"># Efeitos visuais e sonoros da lanterna acendendo na sala</span>
+	flash_luz.color.a = <span class="text-amber-400">0.4</span>
+	som_lanterna.play()
+
+	<span class="text-slate-500"># Varre todos os inimigos ativos na sala de trás para frente</span>
+	<span class="text-purple-400">for</span> i <span class="text-purple-400">in</span> range(inimigos_ativos.size() - <span class="text-amber-400">1</span>, -<span class="text-amber-400">1</span>, -<span class="text-amber-400">1</span>):
+		<span class="text-purple-400">var</span> inimigo = inimigos_ativos[i]
+
+		<span class="text-slate-500"># Ignora se não estiver na direção que a lanterna apontou</span>
+		<span class="text-purple-400">if</span> inimigo.posicao != direcao:
+			<span class="text-purple-400">continue</span>
+
+		<span class="text-red-400"># ⚠️ A PEGADINHA: Se apontou a lanterna para o esqueleto falso, perde na hora!</span>
+		<span class="text-purple-400">if</span> inimigo.tipo == <span class="text-green-300">"falso"</span>:
+			print(<span class="text-red-300">"APONTOU PARA O FALSO!"</span>)
+			game_over() <span class="text-slate-500"># Dispara Jumpscare ("PEGOU NO CATAVENTO!")</span>
+			<span class="text-purple-400">return</span>
+
+		<span class="text-cyan-400"># Se for um fantasma comum (normal, rápido ou lento), exorciza com a luz</span>
+		print(<span class="text-green-300">"MATOU:"</span>, inimigo.tipo)
+		som_inimigo_derrotado.play()
+		flash_luz.color = Color(<span class="text-amber-400">0.8</span>, <span class="text-amber-400">1.0</span>, <span class="text-amber-400">0.8</span>, <span class="text-amber-400">0.6</span>) <span class="text-slate-500"># Flash verde de acerto</span>
+
+		inimigo.node.queue_free()
+		inimigos_ativos.remove_at(i)
+		<span class="text-purple-400">return</span></code></pre>
+        </div>
+
+        <!-- ABA 2: ESP32 (C++) -->
+        <div id="tab-esp32" class="p-4 md:p-6 text-xs md:text-sm font-code overflow-x-auto hidden">
+          <div class="text-slate-400 mb-3 text-xs italic">
+            // Firmware C++ enxuto para o ESP32 usando BleGamepad e portas digitais 15, 2 e 4
+          </div>
+          <pre class="text-slate-200 leading-relaxed"><code><span class="text-purple-400">#include</span> <span class="text-green-300">&lt;BleGamepad.h&gt;</span>
+
+<span class="text-slate-500">// Mapeamento dos pinos digitais com divisores de tensão de 10kΩ</span>
+<span class="text-purple-400">#define</span> PIN_LDR_ESQ  <span class="text-amber-400">15</span>  <span class="text-slate-500">// Esquerda -&gt; BUTTON_1 (JOY_BUTTON_A no Godot)</span>
+<span class="text-purple-400">#define</span> PIN_LDR_CEN  <span class="text-amber-400">2</span>   <span class="text-slate-500">// Centro   -&gt; BUTTON_2 (JOY_BUTTON_B no Godot)</span>
+<span class="text-purple-400">#define</span> PIN_LDR_DIR  <span class="text-amber-400">4</span>   <span class="text-slate-500">// Direita  -&gt; BUTTON_3 (JOY_BUTTON_X no Godot)</span>
+
+<span class="text-slate-500">// Instancia o controle BLE Gamepad</span>
+BleGamepad bleGamepad(<span class="text-green-300">"AsSsombrado-Lanterna"</span>, <span class="text-green-300">"Equipe Catavento"</span>, <span class="text-amber-400">100</span>);
+
+<span class="text-purple-400">void</span> <span class="text-blue-400">setup</span>() {
+  <span class="text-slate-500">// Configura os pinos como entrada digital rápida</span>
+  pinMode(PIN_LDR_ESQ, INPUT);
+  pinMode(PIN_LDR_CEN, INPUT);
+  pinMode(PIN_LDR_DIR, INPUT);
+
+  <span class="text-slate-500">// Inicializa o rádio Bluetooth BLE</span>
+  bleGamepad.begin();
+}
+
+<span class="text-purple-400">void</span> <span class="text-blue-400">loop</span>() {
+  <span class="text-purple-400">if</span> (bleGamepad.isConnected()) {
+    <span class="text-slate-500">// Leitura instantânea e envio de estado ao Godot</span>
+    <span class="text-purple-400">if</span> (digitalRead(PIN_LDR_ESQ) == HIGH) bleGamepad.press(BUTTON_1);
+    <span class="text-purple-400">else</span> bleGamepad.release(BUTTON_1);
+
+    <span class="text-purple-400">if</span> (digitalRead(PIN_LDR_CEN) == HIGH) bleGamepad.press(BUTTON_2);
+    <span class="text-purple-400">else</span> bleGamepad.release(BUTTON_2);
+
+    <span class="text-purple-400">if</span> (digitalRead(PIN_LDR_DIR) == HIGH) bleGamepad.press(BUTTON_3);
+    <span class="text-purple-400">else</span> bleGamepad.release(BUTTON_3);
+  }
+  delay(<span class="text-amber-400">8</span>); <span class="text-slate-500">// Polling rate de ~125Hz (ultra responsivo)</span>
+}</code></pre>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 6: WIDGET DE ESTANDE DA FEIRA & QR   -->
+  <!-- ========================================== -->
+  <section id="qrcode" class="py-20 px-4 bg-void relative">
+    <div class="max-w-4xl mx-auto">
+      
+      <div class="p-8 md:p-10 rounded-3xl bg-gradient-to-b from-surfaceLight to-surface border-2 border-neonCyan/80 shadow-[0_0_50px_rgba(56,189,248,0.25)] text-center relative overflow-hidden">
+        
+        <!-- Emblema de topo -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950 border border-cyan-400 text-neonCyan font-arcade text-xs mb-6">
+          <span>🏛️</span> FEIRA DE ROBÓTICA • COLÉGIO CEV
+        </div>
+
+        <h2 class="font-arcade text-xl md:text-3xl text-white mb-3">VISITE NOSSO ESTANDE!</h2>
+        <p class="text-slate-300 font-code text-sm md:text-base max-w-xl mx-auto mb-8">
+          Escaneie o QR Code abaixo com a câmera do seu celular para abrir esta apresentação, conferir o repositório no GitHub e jogar o AsSsombrado ao vivo no estande!
+        </p>
+
+        <!-- Container do QR Code Dinâmico -->
+        <div class="inline-block p-4 bg-white rounded-2xl shadow-2xl mb-6 relative group">
+          <img id="dynamic-qr" 
+            src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://luisfpatrocinio.github.io/compet2026-asssombrado/" 
+            alt="QR Code do Projeto AsSsombrado" 
+            class="w-48 h-48 md:w-56 md:h-56 mx-auto pixelated">
+          <div class="text-[10px] text-slate-800 font-arcade mt-2">ESCANEAR COM A CÂMERA</div>
+        </div>
+
+        <!-- Links e Ações do Estande -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-xs font-arcade">
+          <a id="pages-live-link" href="https://luisfpatrocinio.github.io/compet2026-asssombrado/" target="_blank" rel="noopener noreferrer" 
+            class="w-full sm:w-auto px-6 py-3 rounded-xl bg-neonCyan text-slate-950 font-bold hover:bg-cyan-300 transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)]">
+            🌐 ABRIR LINK NO NAVEGADOR
+          </a>
+          <button onclick="copyProjectLink()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white transition-all">
+            📋 COPIAR URL DA PÁGINA
+          </button>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-slate-800/80 text-xs text-slate-400 font-code">
+          💡 Link oficial: <span id="display-url" class="text-neonCyan select-all">https://luisfpatrocinio.github.io/compet2026-asssombrado/</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- FOOTER: CRÉDITOS E PARCERIAS               -->
+  <!-- ========================================== -->
+  <footer class="py-12 px-4 bg-black border-t border-slate-900 text-center font-code text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col items-center gap-4">
+      
+      <div class="flex items-center gap-2">
+        <img src="assets/ghost_normal.png" alt="Ghost" class="w-6 h-6 pixelated">
+        <span class="font-arcade text-xs text-slate-400">AsSsombrado (2026)</span>
+      </div>
+
+      <p class="max-w-xl text-slate-400">
+        Projeto vencedor do <strong>1º Lugar Geral (Categoria Pleno)</strong> na <strong>ComPETção 2026</strong> promovida pelo Programa de Educação Tutorial da Engenharia Elétrica da <strong>UFPI</strong>.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 text-slate-400">
+        <span>Equipe Catavento: Mayan Sousa • Ravi Pires • Rubuão Alves</span>
+        <span>•</span>
+        <span>Orientador: Prof. Luis Felipe Patrocinio</span>
+        <span>•</span>
+        <span>Colégio CEV</span>
+      </div>
+
+      <div class="text-[11px] text-slate-600 mt-2">
+        Feito com ⚡, Godot Engine, ESP32 e muito orgulho da robótica piauiense.
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT: Efeito Lanterna, Áudio & Jogo  -->
+  <!-- ========================================== -->
+  <script>
+    // URL Final do GitHub Pages
+    const GITHUB_PAGES_URL = "https://luisfpatrocinio.github.io/compet2026-asssombrado/";
+
+    // 1. Controle da Lanterna no Mouse
+    const flashlightMask = document.getElementById('flashlight-mask');
+    const flashlightHalo = document.getElementById('flashlight-halo');
+    let isLightMode = false;
+
+    function updateFlashlightPosition(x, y) {
+      document.documentElement.style.setProperty('--cursor-x', `${x}px`);
+      document.documentElement.style.setProperty('--cursor-y', `${y}px`);
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      updateFlashlightPosition(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        updateFlashlightPosition(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    // Alternar Modo Luz Acesa (Acessibilidade)
+    function toggleLightMode() {
+      isLightMode = !isLightMode;
+      const body = document.body;
+      const icon = document.getElementById('light-icon');
+      const text = document.getElementById('light-text');
+
+      if (isLightMode) {
+        body.classList.add('light-mode');
+        icon.textContent = '💡';
+        text.textContent = 'LUZ ACESA (ON)';
+      } else {
+        body.classList.remove('light-mode');
+        icon.textContent = '🔦';
+        text.textContent = 'MODO LANTERNA';
+      }
+    }
+
+    // Tecla de atalho 'L' para alternar a luz
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'l' || e.key === 'L') {
+        toggleLightMode();
+      }
+    });
+
+    // 2. Fluxograma Interativo
+    const flowData = {
+      1: {
+        tag: "PASSO 1 DE 5",
+        title: "LANTERNA FÍSICA COMO GATILHO",
+        desc: "O jogador utiliza uma lanterna real para iluminar 3 alvos físicos montados no console. A luz visível atua como o gatilho tangível de ação.",
+        note: "💡 UX Tangível: Conecta o medo infantil da escuridão e a necessidade de focar a luz com a jogabilidade na tela.",
+        icon: "🔦"
+      },
+      2: {
+        tag: "PASSO 2 DE 5",
+        title: "3x SENSORES LDR + DIVISOR DE 10KΩ",
+        desc: "Cada posição (Esquerda, Centro, Direita) possui um sensor fotoresistivo LDR acoplado a um resistor de 10kΩ em divisor de tensão. No escuro, a tensão no pino fica próxima de 0V (LOW); sob a luz da lanterna, a resistência do LDR cai abruptamente e a tensão sobe para 3.3V (HIGH).",
+        note: "⚡ Engenharia: O divisor converte a variação analógica contínua em um patamar digital limpo e sem oscilações.",
+        icon: "☀️"
+      },
+      3: {
+        tag: "PASSO 3 DE 5",
+        title: "ESP32: RESOLVENDO A LIMITAÇÃO DO BLUETOOTH",
+        desc: "Ao ativar o rádio Bluetooth/Wi-Fi no ESP32, os pinos analógicos do ADC2 tornam-se inoperantes por conflito de hardware interno. Para driblar isso com perfeição, conectamos os 3 divisores de tensão diretamente às portas digitais GPIO 15, 2 e 4, lendo com 'digitalRead()' sem qualquer perda ou travamento do ADC2!",
+        note: "🧠 O Pulo do Gato: 0 latência, 100% de estabilidade e total imunidade a interferências de RF do Bluetooth.",
+        icon: "🧠"
+      },
+      4: {
+        tag: "PASSO 4 DE 5",
+        title: "BLE GAMEPAD: PROTOCOLO HID PADRÃO",
+        desc: "Utilizando a biblioteca BleGamepad, o ESP32 se apresenta ao computador como um controle de videogame sem fio nativo. Quando o pino da esquerda recebe luz, ele despacha 'BUTTON_1'; o centro despacha 'BUTTON_2'; a direita despacha 'BUTTON_3'.",
+        note: "📡 Sem Drivers: Funciona em qualquer PC ou console sem precisar instalar drivers adicionais.",
+        icon: "📡"
+      },
+      5: {
+        tag: "PASSO 5 DE 5",
+        title: "GODOT ENGINE 4: EVENTOS E GAMEPLAY",
+        desc: "No script 'main.gd' da Godot, mapeamos JOY_BUTTON_A, B e X diretamente para testar_lanterna('esquerda', 'centro', 'direita'). A engine checa se há fantasmas na direção apontada e processa a derrota do fantasma ou o temido Game Over caso o jogador aponte para o falso!",
+        note: "🎮 Multi-Input: O jogo aceita simultaneamente a lanterna BLE e as teclas do teclado (A, W, D e setas).",
+        icon: "🎮"
+      }
+    };
+
+    function selectFlowStep(step) {
+      document.querySelectorAll('.flow-node').forEach(node => {
+        node.classList.remove('active', 'border-neonCyan', 'shadow-[0_0_15px_rgba(56,189,248,0.3)]');
+        node.classList.add('border-slate-700');
+      });
+
+      const activeNode = document.getElementById(`step-node-${step}`);
+      if (activeNode) {
+        activeNode.classList.add('active', 'border-neonCyan', 'shadow-[0_0_15px_rgba(56,189,248,0.3)]');
+        activeNode.classList.remove('border-slate-700');
+      }
+
+      const data = flowData[step];
+      if (data) {
+        document.getElementById('flow-step-tag').textContent = data.tag;
+        document.getElementById('flow-title').textContent = data.title;
+        document.getElementById('flow-desc').textContent = data.desc;
+        document.getElementById('flow-tech-note').innerHTML = data.note;
+        document.getElementById('flow-badge-icon').textContent = data.icon;
+      }
+    }
+
+    // 3. Controle das Abas de Código
+    let activeTab = 'godot';
+    function switchTab(tab) {
+      activeTab = tab;
+      const tabGodot = document.getElementById('tab-godot');
+      const tabEsp32 = document.getElementById('tab-esp32');
+      const btnGodot = document.getElementById('tab-btn-godot');
+      const btnEsp32 = document.getElementById('tab-btn-esp32');
+
+      if (tab === 'godot') {
+        tabGodot.classList.remove('hidden');
+        tabEsp32.classList.add('hidden');
+        btnGodot.className = "px-3 py-1.5 rounded-lg bg-surfaceLight border border-neonCyan text-neonCyan font-arcade text-[10px] md:text-xs flex items-center gap-2 transition-all";
+        btnEsp32.className = "px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700 text-slate-400 hover:text-white font-arcade text-[10px] md:text-xs flex items-center gap-2 transition-all";
+      } else {
+        tabGodot.classList.add('hidden');
+        tabEsp32.classList.remove('hidden');
+        btnEsp32.className = "px-3 py-1.5 rounded-lg bg-surfaceLight border border-purple-400 text-purple-300 font-arcade text-[10px] md:text-xs flex items-center gap-2 transition-all";
+        btnGodot.className = "px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700 text-slate-400 hover:text-white font-arcade text-[10px] md:text-xs flex items-center gap-2 transition-all";
+      }
+    }
+
+    function copyCurrentCode() {
+      const codeElement = activeTab === 'godot' 
+        ? document.querySelector('#tab-godot code')
+        : document.querySelector('#tab-esp32 code');
+      
+      navigator.clipboard.writeText(codeElement.innerText).then(() => {
+        const copyText = document.getElementById('copy-text');
+        copyText.textContent = "COPIADO! ✅";
+        setTimeout(() => copyText.textContent = "COPIAR CÓDIGO", 2000);
+      });
+    }
+
+    function copyProjectLink() {
+      navigator.clipboard.writeText(GITHUB_PAGES_URL).then(() => {
+        alert("Link copiado para a área de transferência:\n" + GITHUB_PAGES_URL);
+      });
+    }
+
+    // 4. Efeitos de Áudio Sintetizados (Web Audio API)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playClickSfx() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    }
+
+    function playScreamSfx() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+      osc.frequency.linearRampToValueAtTime(700, audioCtx.currentTime + 0.2);
+      osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.6);
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.6);
+    }
+
+    // 5. Mini-Simulador Interativo
+    let simScore = 0;
+    let simEnemies = {
+      esquerda: null,
+      centro: null,
+      direita: null
+    };
+    let simIsGameOver = false;
+
+    const enemyTypes = [
+      { type: 'normal', name: 'Comum', img: 'assets/ghost_normal.png', isFake: false },
+      { type: 'rapido', name: 'Rápido', img: 'assets/ghost_rapido.png', isFake: false },
+      { type: 'lento',  name: 'Lento',  img: 'assets/ghost_lento.png',  isFake: false },
+      { type: 'falso',  name: 'Esqueleto Falso', img: 'assets/inimigo_falso.png', isFake: true }
+    ];
+
+    function spawnRandomSimEnemy() {
+      if (simIsGameOver) return;
+      const positions = ['esquerda', 'centro', 'direita'];
+      const availablePositions = positions.filter(pos => simEnemies[pos] === null);
+      
+      if (availablePositions.length > 0) {
+        const randomPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
+        const randomEnemy = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+        simEnemies[randomPos] = randomEnemy;
+
+        const targetSlot = document.getElementById(`sim-target-${randomPos}`);
+        targetSlot.innerHTML = `<img src="${randomEnemy.img}" class="w-12 h-12 pixelated animate-float ${randomEnemy.isFake ? 'filter drop-shadow-[0_0_8px_#ef4444]' : ''}">`;
+
+        // Se for o falso, some sozinho após 4 segundos se o jogador não atirar
+        if (randomEnemy.isFake) {
+          setTimeout(() => {
+            if (simEnemies[randomPos] === randomEnemy && !simIsGameOver) {
+              simEnemies[randomPos] = null;
+              targetSlot.innerHTML = '';
+            }
+          }, 4000);
+        }
+      }
+    }
+
+    function triggerFlashlight(dir) {
+      if (simIsGameOver) return;
+      playClickSfx();
+
+      // Flash visual
+      const flash = document.getElementById('sim-flash');
+      flash.style.opacity = '0.7';
+      setTimeout(() => flash.style.opacity = '0', 120);
+
+      const enemy = simEnemies[dir];
+      const feedback = document.getElementById('sim-feedback');
+
+      if (!enemy) {
+        feedback.innerHTML = `<span class="text-slate-400">Você iluminou a ${dir.toUpperCase()}, mas não havia nada lá!</span>`;
+        return;
+      }
+
+      if (enemy.isFake) {
+        // PEGOU NO CATAVENTO!
+        simIsGameOver = true;
+        playScreamSfx();
+        document.getElementById('sim-jumpscare').classList.remove('hidden');
+        document.getElementById('sim-jumpscare').classList.add('flex');
+        feedback.innerHTML = `<span class="text-red-500 font-bold">☠️ PEGOU NO CATAVENTO! Você apontou a luz para o Inimigo Falso!</span>`;
+      } else {
+        // Acertou fantasma
+        simScore += 100;
+        document.getElementById('sim-score').textContent = simScore;
+        feedback.innerHTML = `<span class="text-green-400 font-bold">💥 EXORCIZADO! +100 Pontos na ${dir.toUpperCase()}!</span>`;
+        simEnemies[dir] = null;
+        document.getElementById(`sim-target-${dir}`).innerHTML = '';
+      }
+    }
+
+    function resetSim() {
+      simScore = 0;
+      simIsGameOver = false;
+      document.getElementById('sim-score').textContent = '0';
+      document.getElementById('sim-jumpscare').classList.add('hidden');
+      document.getElementById('sim-jumpscare').classList.remove('flex');
+      ['esquerda', 'centro', 'direita'].forEach(pos => {
+        simEnemies[pos] = null;
+        document.getElementById(`sim-target-${pos}`).innerHTML = '';
+      });
+      document.getElementById('sim-feedback').textContent = "Simulador reiniciado! Mire com atenção!";
+      spawnRandomSimEnemy();
+    }
+
+    // Teclas do teclado para o simulador
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+      if (key === 'a' || e.key === 'ArrowLeft') {
+        triggerFlashlight('esquerda');
+      } else if (key === 'w' || e.key === 'ArrowUp') {
+        triggerFlashlight('centro');
+      } else if (key === 'd' || e.key === 'ArrowRight') {
+        triggerFlashlight('direita');
+      }
+    });
+
+    // Inicia gerador de inimigos do simulador
+    setInterval(spawnRandomSimEnemy, 2500);
+    setTimeout(spawnRandomSimEnemy, 500);
+  </script>
+</body>
+</html>
