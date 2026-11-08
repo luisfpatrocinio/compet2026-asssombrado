@@ -20,6 +20,16 @@ var cortina_preta = ColorRect.new() # Camada global de Fade
 var som_lanterna = AudioStreamPlayer.new()
 var som_jumpscare = AudioStreamPlayer.new()
 var som_inimigo_derrotado = AudioStreamPlayer.new()
+var som_gameover = AudioStreamPlayer.new()
+var som_vitoria = AudioStreamPlayer.new()
+var som_yay = AudioStreamPlayer.new()
+
+var musica_titulo = AudioStreamPlayer.new()
+var musica_jogo = AudioStreamPlayer.new()
+
+var tempo_inatividade = 0.0
+var limite_inatividade = 10.0
+var nos_creditos = false
 
 # Guarda todos os inimigos que estão aparecendo
 var inimigos_ativos = []
@@ -30,7 +40,13 @@ var cena_normal = preload("res://inimigos/InimigoNormal.tscn")
 var cena_rapido = preload("res://inimigos/InimigoRapido.tscn")
 var cena_lento = preload("res://inimigos/InimigoLento.tscn")
 var cena_falso = preload("res://inimigos/InimigoFalso.tscn")
-
+var audio_musica_titulo = preload("res://audio/backgroundMusics/boneyard.mp3")
+var audio_musica_jogo = preload("res://audio/backgroundMusics/ghost_town.mp3")
+var audio_lanterna = preload("res://audio/lanternaSFX/freesound_community-flashlight-102291.mp3")
+var audio_gameover = preload("res://audio/gameover/Alone.mp3")
+var audio_jumpscare = preload("res://audio/gameover/horrorghostscream.mp3")
+var audio_vitoria = preload("res://audio/vitoria/eaglaxle-gaming-victory-464016.mp3")
+var audio_yay = preload("res://audio/vitoria/jesuschristisgod-children-saying-yay-praise-and-worship-jesus-299607.mp3")
 
 @onready var pos_esquerda = $PosEsquerda
 @onready var pos_centro = $PosCentro
@@ -43,6 +59,8 @@ var cena_falso = preload("res://inimigos/InimigoFalso.tscn")
 @onready var relogio = $Interface/Relogio
 @onready var vitoria_tela = $Interface/Vitoria
 @onready var indicacao_level = $Interface/IndicacaoLevel
+@onready var creditos_tela = $Interface/Creditos
+@onready var texto_creditos = $Interface/Creditos/TextoCreditos
 
 # Referências aos Textos e Botões para animação
 @onready var texto_game_over = $Interface/GameOver/Jumpscare/Texto
@@ -64,7 +82,8 @@ func _ready():
 	jumpscare.visible = false
 	vitoria_tela.visible = false
 	indicacao_level.visible = false
-	
+	creditos_tela.visible = false
+	creditos_tela.clip_contents = true
 	# Configura o Flash de Luz da Lanterna
 	flash_luz.color = Color(1, 1, 0.8, 0.0) # Amarelo transparente
 	flash_luz.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -87,8 +106,19 @@ func _ready():
 	add_child(som_lanterna)
 	add_child(som_jumpscare)
 	add_child(som_inimigo_derrotado)
-	# TODO: Depois você pode arrastar arquivos de áudio para cá:
-	# som_lanterna.stream = preload("res://caminho_do_som.mp3")
+	add_child(musica_titulo)
+	add_child(musica_jogo)
+	add_child(som_gameover)
+	add_child(som_vitoria)
+	add_child(som_yay)
+	
+	som_lanterna.stream = audio_lanterna
+	musica_titulo.stream = audio_musica_titulo
+	musica_jogo.stream = audio_musica_jogo
+	som_gameover.stream = audio_gameover
+	som_jumpscare.stream = audio_jumpscare
+	som_vitoria.stream = audio_vitoria
+	som_yay.stream = audio_yay
 
 	# Esconde o relógio estático que estava sobrando
 	relogio.visible = false
@@ -98,8 +128,11 @@ func _ready():
 
 	# Mostra o menu
 	$Interface/Menu.visible = true
+	
+	musica_titulo.play()
 
-
+	musica_titulo.play()
+	print("TENTANDO TOCAR MUSICA")
 func _configurar_textos():
 	# Expande o Menu para cobrir a tela inteira, para que as âncoras dos filhos funcionem
 	$Interface/Menu.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -187,6 +220,7 @@ func _configurar_textos():
 		texto_vitoria.label_settings.font_color = Color(1, 0.8, 0) # Dourado
 		texto_vitoria.label_settings.shadow_color = Color(0, 0, 0, 0.7)
 		texto_vitoria.label_settings.shadow_size = 5
+		texto_vitoria.label_settings.font_size = 65
 		
 	# Para pulsar a partir do centro, garantimos que o texto esteja centralizado na tela
 	texto_vitoria.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -198,7 +232,42 @@ func _configurar_textos():
 	tween_vitoria.tween_property(texto_vitoria, "scale", Vector2(1.05, 1.05), 1.0).set_trans(Tween.TRANS_SINE)
 	tween_vitoria.tween_property(texto_vitoria, "scale", Vector2(1.0, 1.0), 1.0).set_trans(Tween.TRANS_SINE)
 
-
+	texto_creditos.text = "CRÉDITOS\n\n" + \
+		"AS PESSOAS QUE TORNARAM ESSE PROJETO POSSÍVEL:\n\n\n" + \
+		"ORIENTADOR:\n\n" + \
+		"Luis Felipe Patrocinio\n\n\n" + \
+		"DIREÇÃO DO PROJETO:\n\n" + \
+		"Rubuão Alves de Brito\n" + \
+		"Mayan Sousa dos Santos\n" + \
+		"Ravi Pires Ribeiro\n\n\n" + \
+		"--ASSETS--\n\n\n" + \
+		"MÚSICAS\n\n" + \
+		'ppeak — "FREE Action Chiptune Music Pack"\n' + \
+		"OpenGameArt.org\n\n" + \
+		'Tausdei — "Ghost Town"\n' + \
+		"OpenGameArt.org\n\n\n" + \
+		"ÁUDIO — GAME OVER\n\n" + \
+		'Sudocolon — "Alone"\n' + \
+		"OpenGameArt.org\n\n\n" + \
+		"ÁUDIO — JUMPSCARE\n\n" + \
+		'VishwaJai — "Phantom Scream"\n' + \
+		"OpenGameArt.org\n\n\n" + \
+		"ENEMY SPRITES\n\n" + \
+		'ansimuz — "Chibi Monsters Set 01"\n' + \
+		"OpenGameArt.org\n\n\n" + \
+		"FLASHLIGHT SFX\n\n" + \
+		'morganpurkis — "Flashlight"\n' + \
+		"Pixabay.com\n\n\n" + \
+		"VICTORY SOUNDS\n\n" + \
+		'EAGLAXLE — "Gaming victory"\n' + \
+		"Pixabay.com\n\n" + \
+		'JesusChristIsGod — "Children saying Yay -\n' + \
+		'Praise and Worship Jesus"\n' + \
+		"Pixabay.com\n\n\n" + \
+		"ENGINE\n\n" + \
+		"Godot Engine\n\n\n" + \
+		"OBRIGADO POR JOGAR."
+		
 func _process(delta):
 	# === NOVA LÓGICA DE INPUT GLOBAL ===
 	var acionou = false
@@ -225,6 +294,13 @@ func _process(delta):
 	# INTERROMPE COMPLETAMENTE O FLUXO DO JOGO DURANTE QUALQUER TRANSIÇÃO
 	if mudando_level:
 		return
+		# Conta inatividade nas telas de Game Over e Vitória
+	if jogo_terminou and not nos_creditos:
+		tempo_inatividade += delta
+
+		if tempo_inatividade >= limite_inatividade:
+			mostrar_creditos()
+			return
 
 	# Se o jogo ainda não começou, qualquer luz inicia o jogo!
 	if not jogo_iniciado:
@@ -233,9 +309,19 @@ func _process(delta):
 		return
 
 	# Se o jogo terminou, qualquer luz reinicia o jogo (respeitando a trava de tempo)
+	# Se o jogo terminou, conta a inatividade nas telas de Game Over/Vitória
 	if jogo_terminou:
 		if disparou_agora and pode_reiniciar:
+			tempo_inatividade = 0.0
 			_on_botao_tentar_novamente_pressed()
+		return
+
+		tempo_inatividade += delta
+
+		if tempo_inatividade >= limite_inatividade:
+			mostrar_creditos()
+			return
+
 		return
 
 	# Daqui pra baixo é o jogo rodando normalmente...
@@ -268,6 +354,15 @@ func _process(delta):
 	# Se o jogador apontou a lanterna durante o gameplay
 	if disparou_agora:
 		testar_lanterna(direcao)
+
+	if disparou_agora:
+		tempo_inatividade = 0.0
+	else:
+		tempo_inatividade += delta
+
+	if tempo_inatividade >= limite_inatividade:
+		_on_botao_tentar_novamente_pressed()
+		return
 
 	if jogo_terminou:
 		return
@@ -491,11 +586,13 @@ func proximo_level():
 func game_over():
 	mudando_level = false
 	jogo_terminou = true
+	musica_jogo.stop()
 	som_jumpscare.play()
+	som_gameover.play()
 	shake_intensity = 0.0
 	bg.position = Vector2(-2, 2)
 	pode_reiniciar = false # Trava para não pular o Jumpscare sem querer
-
+	tempo_inatividade = 0.0
 	# Remove todos os inimigos
 	for inimigo in inimigos_ativos:
 		inimigo.node.queue_free()
@@ -509,12 +606,15 @@ func game_over():
 	# Aguarda 1.5s antes de permitir que a lanterna reinicie o jogo
 	await get_tree().create_timer(1.5).timeout
 	pode_reiniciar = true
-
+	
 
 func vitoria():
 	mudando_level = false
 	jogo_terminou = true
 	pode_reiniciar = false
+	
+	musica_jogo.stop()
+	som_yay.play()
 
 	# Remove todos os inimigos
 	for inimigo in inimigos_ativos:
@@ -529,6 +629,86 @@ func vitoria():
 	await get_tree().create_timer(1.0).timeout
 	pode_reiniciar = true
 
+func mostrar_creditos():
+	if nos_creditos:
+		return
+
+	nos_creditos = true
+	mudando_level = true
+	pode_reiniciar = false
+	tempo_inatividade = 0.0
+
+	# Esconde as telas anteriores
+	game_over_tela.visible = false
+	jumpscare.visible = false
+	vitoria_tela.visible = false
+
+	# Para músicas do jogo
+	musica_jogo.stop()
+
+	# Mostra os créditos
+	creditos_tela.visible = true
+
+	# Começa o texto abaixo da tela
+	await get_tree().process_frame
+
+	var altura_texto = texto_creditos.get_combined_minimum_size().y
+	texto_creditos.position = Vector2(0, 648)
+
+	# Fade inicial dos créditos
+	texto_creditos.modulate.a = 0.0
+
+	var tween_fade = create_tween()
+	tween_fade.tween_property(texto_creditos, "modulate:a", 1.0, 1.0)
+	await tween_fade.finished
+
+	# Rola os créditos lentamente até o final
+	var distancia = 648.0 + altura_texto
+	var tween_rolagem = create_tween()
+
+	tween_rolagem.tween_property(
+		texto_creditos,
+		"position:y",
+		-altura_texto,
+		distancia / 35.0
+	).set_trans(Tween.TRANS_LINEAR)
+
+	await tween_rolagem.finished
+
+	# Pequena pausa no final
+	await get_tree().create_timer(2.0).timeout
+
+	# Fade para preto
+	var tween_saida = create_tween()
+	tween_saida.tween_property(cortina_preta, "color:a", 1.0, 1.0)
+	await tween_saida.finished
+
+	# Volta direto para o menu
+	creditos_tela.visible = false
+	texto_creditos.position = Vector2(0, 648)
+
+	jogo_iniciado = false
+	jogo_terminou = false
+	nos_creditos = false
+	tempo_inatividade = 0.0
+
+	level_atual = 0
+	fantasma_atual = 0
+	tempo_level = 0.0
+
+	for inimigo in inimigos_ativos:
+		inimigo.node.queue_free()
+
+	inimigos_ativos.clear()
+
+	musica_titulo.play()
+	$Interface/Menu.visible = true
+
+	var tween_entrada_menu = create_tween()
+	tween_entrada_menu.tween_property(cortina_preta, "color:a", 0.0, 1.0)
+	await tween_entrada_menu.finished
+
+	mudando_level = false
 
 func iniciar_level():
 	tempo_level = 0.0
@@ -545,6 +725,10 @@ func _on_botao_iniciar_pressed():
 
 	jogo_iniciado = true
 	jogo_terminou = false
+	
+	musica_titulo.stop()
+	musica_jogo.play()
+
 	level_atual = -1 # Começa no -1 porque o proximo_level vai somar +1
 	
 	$Interface/Menu.visible = false
@@ -566,6 +750,11 @@ func _on_botao_tentar_novamente_pressed():
 	jogo_iniciado = false
 	jogo_terminou = false
 	pode_reiniciar = false
+	nos_creditos = false
+	tempo_inatividade = 0.0
+	
+	musica_jogo.stop()
+	musica_titulo.play()
 
 	level_atual = 0
 	fantasma_atual = 0
