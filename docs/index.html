@@ -762,16 +762,20 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
     // 1. MAQUETE 3D INTERATIVA (Three.js)
     // ========================================================
     let scene, camera, renderer, controls;
-    let flashlightGroup, lightCone, lightSpot, lightPuddle;
+    let flashlightGroup, beamGroup, lightCone, lightCore, lightSpot, lightPuddle;
     let ldrMeshes = {};
     let targetLookAt = new THREE.Vector3(0, 0.5, 0);
     let currentAimTarget = 'centro';
     let targetQuaternion = new THREE.Quaternion();
+    let currentBeamLength = 1.22;
+    let targetBeamLength = 1.22;
+
+    const FLASHLIGHT_POS = new THREE.Vector3(0, 1.0, 3.8);
 
     const LDR_POSITIONS = {
-      esquerda: { angle: -0.48, x: -3.2, y: 0.8, z: 0.5, gpio: 'GPIO 15', name: 'Sensor Esquerda', color: 0x38bdf8 },
-      centro:   { angle: 0.0,   x: 0.0,  y: 0.8, z: 1.5, gpio: 'GPIO 2',  name: 'Sensor Centro',   color: 0xf59e0b },
-      direita:  { angle: 0.48,  x: 3.2,  y: 0.8, z: 0.5, gpio: 'GPIO 4',  name: 'Sensor Direita',  color: 0xec4899 }
+      esquerda: { x: -3.2, y: 0.9, z: 0.5, gpio: 'GPIO 15', name: 'Sensor Esquerda', color: 0x38bdf8 },
+      centro:   { x: 0.0,  y: 0.9, z: 1.5, gpio: 'GPIO 2',  name: 'Sensor Centro',   color: 0xf59e0b },
+      direita:  { x: 3.2,  y: 0.9, z: 0.5, gpio: 'GPIO 4',  name: 'Sensor Direita',  color: 0xec4899 }
     };
 
     function init3D() {
@@ -904,7 +908,11 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
         const data = LDR_POSITIONS[key];
         const towerGroup = new THREE.Group();
         towerGroup.position.set(data.x, 0, data.z);
-        towerGroup.rotation.y = data.angle;
+
+        // O sensor deve estar orientado DIRETAMENTE para a lanterna!
+        const dx = FLASHLIGHT_POS.x - data.x;
+        const dz = FLASHLIGHT_POS.z - data.z;
+        towerGroup.rotation.y = Math.atan2(dx, dz);
 
         // Base do Sensor
         const postGeo = new THREE.CylinderGeometry(0.25, 0.35, 0.7, 16);
@@ -913,7 +921,7 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
         post.position.y = 0.35;
         towerGroup.add(post);
 
-        // Tubo Colimador
+        // Tubo Colimador (Abertura para a frente em +Z, fundo fechado em -Z)
         const tubeGeo = new THREE.CylinderGeometry(0.4, 0.4, 1.0, 24, 1, true);
         const tubeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.7, side: THREE.DoubleSide });
         const tube = new THREE.Mesh(tubeGeo, tubeMat);
@@ -921,7 +929,14 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
         tube.rotation.x = Math.PI / 2;
         towerGroup.add(tube);
 
-        // Pastilha LDR
+        // Tampa traseira do tubo colimador (fundo opaco)
+        const capGeo = new THREE.CircleGeometry(0.4, 24);
+        const capMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
+        const cap = new THREE.Mesh(capGeo, capMat);
+        cap.position.set(0, 0.9, -0.5);
+        towerGroup.add(cap);
+
+        // Pastilha LDR no fundo interno do tubo
         const ldrDiskGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.08, 16);
         const ldrDiskMat = new THREE.MeshStandardMaterial({ 
           color: data.color, 
@@ -1037,12 +1052,14 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       lens.position.z = 0.58;
       flashlightGroup.add(lens);
 
-      // Facho de luz volumétrico orientado para os sensores (+Z)
-      const beamLength = 3.6;
-      const beamGeo = new THREE.CylinderGeometry(0.75, 0.13, beamLength, 32, 1, true);
-      beamGeo.translate(0, beamLength / 2, 0);
+      // Facho de luz volumétrico contido em beamGroup
+      // Inicia exatamente no bocal/lente (z=0.58) e tem comprimento unitário 1.0 ao longo de +Z
+      beamGroup = new THREE.Group();
+      beamGroup.position.set(0, 0, 0.58);
+
+      const beamGeo = new THREE.CylinderGeometry(0.40, 0.16, 1.0, 32, 1, true);
+      beamGeo.translate(0, 0.5, 0);
       beamGeo.rotateX(Math.PI / 2);
-      beamGeo.translate(0, 0, 0.58);
 
       const beamTexture = createBeamTexture();
       const beamMat = new THREE.MeshBasicMaterial({
@@ -1054,13 +1071,12 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
         depthWrite: false
       });
       lightCone = new THREE.Mesh(beamGeo, beamMat);
-      flashlightGroup.add(lightCone);
+      beamGroup.add(lightCone);
 
-      // Núcleo brilhante
-      const coreGeo = new THREE.CylinderGeometry(0.3, 0.04, beamLength, 20, 1, true);
-      coreGeo.translate(0, beamLength / 2, 0);
+      // Núcleo brilhante (comprimento unitário 1.0)
+      const coreGeo = new THREE.CylinderGeometry(0.18, 0.07, 1.0, 20, 1, true);
+      coreGeo.translate(0, 0.5, 0);
       coreGeo.rotateX(Math.PI / 2);
-      coreGeo.translate(0, 0, 0.58);
 
       const coreMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
@@ -1070,22 +1086,24 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
         side: THREE.DoubleSide,
         depthWrite: false
       });
-      const lightCore = new THREE.Mesh(coreGeo, coreMat);
-      flashlightGroup.add(lightCore);
+      lightCore = new THREE.Mesh(coreGeo, coreMat);
+      beamGroup.add(lightCore);
+
+      flashlightGroup.add(beamGroup);
 
       // SpotLight
-      lightSpot = new THREE.SpotLight(0xfff8ba, 5, 12, Math.PI / 7, 0.45, 1);
+      lightSpot = new THREE.SpotLight(0xfff8ba, 4, 8, Math.PI / 8, 0.4, 1);
       lightSpot.position.set(0, 0, 0.58);
       const spotTarget = new THREE.Object3D();
-      spotTarget.position.set(0, 0, 6);
+      spotTarget.position.set(0, 0, 4);
       flashlightGroup.add(lightSpot);
       flashlightGroup.add(spotTarget);
       lightSpot.target = spotTarget;
 
       scene.add(flashlightGroup);
 
-      // Mancha de luz no sensor
-      const puddleGeo = new THREE.CircleGeometry(0.7, 32);
+      // Mancha de luz no chão do sensor
+      const puddleGeo = new THREE.CircleGeometry(0.55, 32);
       const puddleMat = new THREE.MeshBasicMaterial({
         color: 0xf59e0b,
         transparent: true,
@@ -1116,32 +1134,43 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       const activeBtn = document.getElementById(btnMap[pos]);
       if (activeBtn) activeBtn.classList.add('font-bold', 'bg-brand-elevated', 'border-brand-cyan');
 
-      const targetPos = new THREE.Vector3(target.x, target.y + 0.1, target.z);
+      // Centro do tubo do sensor (y = 0.9)
+      const sensorPos = new THREE.Vector3(target.x, 0.9, target.z);
       const dummy = new THREE.Object3D();
       dummy.position.copy(flashlightGroup.position);
-      dummy.lookAt(targetPos);
+      dummy.lookAt(sensorPos);
       targetQuaternion.copy(dummy.quaternion);
 
-      const dist = flashlightGroup.position.distanceTo(targetPos);
-      if (lightCone) {
-        lightCone.scale.set(1, 1, dist / 3.6);
-      }
+      // Distância do pivô da lanterna até o centro do sensor
+      const dist = flashlightGroup.position.distanceTo(sensorPos);
+      // Subtrai 0.58 (bocal da lanterna) e 0.50 (raio até a boca do tubo)
+      // O facho termina EXATAMENTE na abertura frontal do colimador, sem atravessar o sensor!
+      targetBeamLength = Math.max(0.4, dist - 0.58 - 0.50);
 
       if (immediate) {
         flashlightGroup.quaternion.copy(targetQuaternion);
+        currentBeamLength = targetBeamLength;
+        if (beamGroup) {
+          beamGroup.scale.set(1, 1, currentBeamLength);
+        }
+      }
+
+      if (lightSpot) {
+        lightSpot.distance = targetBeamLength + 0.6;
       }
 
       Object.keys(ldrMeshes).forEach(k => {
-        ldrMeshes[k].disk.material.emissiveIntensity = (k === pos) ? 1.0 : 0.2;
+        ldrMeshes[k].disk.material.emissiveIntensity = (k === pos) ? 1.0 : 0.15;
       });
 
       if (lightPuddle) {
-        lightPuddle.position.set(target.x, 0.04, target.z);
+        const toFlash = new THREE.Vector3().subVectors(flashlightGroup.position, sensorPos).normalize();
+        lightPuddle.position.set(target.x + toFlash.x * 0.5, 0.04, target.z + toFlash.z * 0.5);
         lightPuddle.material.color.setHex(target.color);
       }
 
       document.getElementById('hud-component-title').textContent = `${target.name.toUpperCase()} ILUMINADO`;
-      document.getElementById('hud-component-desc').textContent = `Facho de luz focado no tubo óptico. O divisor de 10kΩ comutou o sinal para HIGH.`;
+      document.getElementById('hud-component-desc').textContent = `Facho alinhado diretamente na abertura do colimador. O LDR atingiu o limiar e gerou sinal HIGH.`;
       document.getElementById('hud-pin-badge').textContent = `${target.gpio} = HIGH`;
       document.getElementById('hud-status-dot').style.backgroundColor = (pos === 'centro') ? '#f59e0b' : (pos === 'direita' ? '#ec4899' : '#38bdf8');
     }
@@ -1208,6 +1237,11 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
 
       if (flashlightGroup && targetQuaternion) {
         flashlightGroup.quaternion.slerp(targetQuaternion, 0.08);
+      }
+
+      if (beamGroup) {
+        currentBeamLength += (targetBeamLength - currentBeamLength) * 0.08;
+        beamGroup.scale.set(1, 1, currentBeamLength);
       }
 
       renderer.render(scene, camera);
