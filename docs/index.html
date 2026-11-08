@@ -1,104 +1,98 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth bg-[#050811] text-[#f8fafc]">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AsSsombrado — 1º Lugar ComPETção 2026 | Colégio CEV</title>
-  <meta name="description" content="Showcase oficial do jogo AsSsombrado. Projeto campeão do 1º Lugar na ComPETção 2026 (UFPI • Categoria Pleno). Controle físico com lanterna real, sensores LDR e ESP32 conectado à Godot Engine 4.">
+  <title>AsSsombrado // 1º Lugar ComPETção 2026 (UFPI) — Cápsula do Tempo</title>
+  <meta name="description" content="Registro histórico oficial e showcase interativo do jogo AsSsombrado, campeão do 1º Lugar na ComPETção 2026 (UFPI - Nível Pleno) desenvolvido pela Equipe Catavento do Colégio CEV.">
   
-  <!-- Open Graph -->
-  <meta property="og:title" content="AsSsombrado — Campeão ComPETção 2026 (UFPI)">
-  <meta property="og:description" content="Três estudantes transformaram uma lanterna física em um controle de videogame via ESP32 e Godot Engine. Colégio CEV.">
-  <meta property="og:image" content="assets/AsSsombradoLogo.png">
-  <meta property="og:type" content="website">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/ghost_normal.png">
-
-  <!-- Google Fonts: Space Grotesk (Editorial Display), JetBrains Mono (Tech), Press Start 2P (Arcade accents) -->
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Press Start 2P (Títulos Pixel), JetBrains Mono (Código & Circuitos) e VT323 (Terminal) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  
+  <!-- Three.js e OrbitControls para a Maquete 3D da Bancada Física -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             brand: {
-              black: '#07080c',
-              base: '#0c0e14',
-              surface: '#131620',
-              elevated: '#1a1e2c',
-              border: '#262b3d',
-              borderLight: '#373e56',
+              night: '#050811',
+              box: '#070b19',
+              boxalt: '#0b1226',
               cyan: '#38bdf8',
-              amber: '#f59e0b',
-              crimson: '#ef4444',
-              emerald: '#10b981'
+              cyandark: '#0284c7',
+              pink: '#ff2a85',
+              pinkdark: '#db2777',
+              gold: '#fbbf24',
+              golddark: '#d97706',
+              emerald: '#34d399',
+              border: '#1e293b'
             }
           },
           fontFamily: {
-            sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+            pixel: ['"Press Start 2P"', 'monospace'],
             mono: ['"JetBrains Mono"', 'monospace'],
-            arcade: ['"Press Start 2P"', 'monospace']
+            terminal: ['"VT323"', 'monospace']
           }
         }
       }
     }
   </script>
 
-  <!-- Three.js + OrbitControls -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
   <style>
-    /* Reset e Fundo com Alto Contraste (WCAG AA) */
+    /* Reset e Fundamentos Retrô Brutalistas */
+    * {
+      border-radius: 0 !important;
+      box-sizing: border-box;
+    }
     html, body {
-      background-color: #07080c !important;
-      color: #e2e8f0 !important;
+      background-color: #050811 !important;
+      color: #f8fafc !important;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
     }
 
-    /* Tipografia e Escala Editorial Explícita */
+    /* Escala Tipográfica Explícita (Auditoria Impeccable) */
     h1 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem) !important;
-      line-height: 1.1 !important;
+      font-size: clamp(1.4rem, 4vw, 2.4rem) !important;
+      line-height: 1.25 !important;
       font-weight: 700 !important;
       color: #ffffff !important;
-      letter-spacing: -0.025em !important;
+      font-family: 'Press Start 2P', monospace !important;
     }
     h2 {
-      font-size: clamp(1.6rem, 3.5vw, 2.25rem) !important;
-      line-height: 1.2 !important;
+      font-size: clamp(1.1rem, 2.8vw, 1.6rem) !important;
+      line-height: 1.3 !important;
       font-weight: 700 !important;
       color: #ffffff !important;
-      letter-spacing: -0.02em !important;
+      font-family: 'Press Start 2P', monospace !important;
     }
     h3 {
-      font-size: clamp(1.2rem, 2.5vw, 1.45rem) !important;
-      line-height: 1.3 !important;
-      font-weight: 600 !important;
+      font-size: clamp(0.9rem, 2vw, 1.25rem) !important;
+      line-height: 1.35 !important;
+      font-weight: 700 !important;
       color: #f8fafc !important;
     }
     h4 {
-      font-size: 1.15rem !important;
+      font-size: 1.05rem !important;
       line-height: 1.3 !important;
-      font-weight: 600 !important;
+      font-weight: 700 !important;
       color: #f1f5f9 !important;
     }
     p, li {
-      font-size: 1rem !important;
-      line-height: 1.6 !important;
+      font-size: 0.95rem !important;
+      line-height: 1.65 !important;
       color: #cbd5e1 !important;
-    }
-
-    /* Cores de alto contraste para cartões com fundo claro */
-    .qr-badge {
-      background-color: #ffffff !important;
-      color: #0f172a !important;
     }
 
     /* Pixel Art Rendering */
@@ -108,17 +102,114 @@
       image-rendering: crisp-edges;
     }
 
+    /* Efeito Sutil de Scanlines CRT */
+    .crt-overlay {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+    }
+
+    /* Botão Retrô Interativo com Sombra Deslocada */
+    .retro-btn-cyan {
+      background-color: #38bdf8;
+      color: #050811;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      border: 2px solid #ffffff;
+      box-shadow: 4px 4px 0px #0284c7;
+      transition: all 0.1s ease;
+      cursor: pointer;
+    }
+    .retro-btn-cyan:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #0284c7;
+    }
+    .retro-btn-cyan:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #0284c7;
+    }
+
+    .retro-btn-pink {
+      background-color: #ff2a85;
+      color: #050811;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      border: 2px solid #ffffff;
+      box-shadow: 4px 4px 0px #db2777;
+      transition: all 0.1s ease;
+      cursor: pointer;
+    }
+    .retro-btn-pink:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #db2777;
+    }
+    .retro-btn-pink:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #db2777;
+    }
+
+    .retro-btn-dark {
+      background-color: #070b19;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 2px solid #38bdf8;
+      box-shadow: 4px 4px 0px #0284c7;
+      transition: all 0.1s ease;
+      cursor: pointer;
+    }
+    .retro-btn-dark:hover {
+      background-color: #0b1226;
+      color: #ffffff;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #0284c7;
+    }
+    .retro-btn-dark:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #0284c7;
+    }
+
+    /* Animação Pixel Flutuante dos Fantasmas */
+    @keyframes retro-bob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .bob-ghost-1 { animation: retro-bob 2.8s ease-in-out infinite; }
+    .bob-ghost-2 { animation: retro-bob 2.2s ease-in-out infinite 0.6s; }
+    .bob-ghost-3 { animation: retro-bob 3.2s ease-in-out infinite 1.2s; }
+    .bob-ghost-4 { animation: retro-bob 2.5s ease-in-out infinite 1.8s; }
+
+    /* Trepidação de Jumpscare */
+    @keyframes screen-shake {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-6px, 6px) rotate(-1deg); }
+      40% { transform: translate(6px, -4px) rotate(1deg); }
+      60% { transform: translate(-4px, -6px) rotate(-0.5deg); }
+      80% { transform: translate(4px, 4px) rotate(0.5deg); }
+    }
+    .shake-active {
+      animation: screen-shake 0.35s ease-in-out 3;
+    }
+
     /* 3D Viewport Frame */
     #maquete3d-container {
       width: 100%;
       height: 480px;
       position: relative;
-      background-color: #090b10 !important;
+      background-color: #070b19 !important;
       color: #e2e8f0 !important;
       overflow: hidden;
       padding: 16px;
     }
-
     #maquete3d-container canvas {
       position: absolute;
       top: 0;
@@ -128,217 +219,490 @@
       z-index: 1;
     }
 
-    @media (max-width: 768px) {
-      #maquete3d-container {
-        height: 380px;
-      }
-    }
-
-    /* Scrollbar limpa */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #07080c;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #262b3d;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #38bdf8;
-    }
-
-    /* Código syntax styling */
-    pre code {
-      tab-size: 2;
-      color: #f1f5f9 !important;
+    /* Cores de Alto Contraste QR */
+    .qr-badge {
+      background-color: #ffffff !important;
+      color: #050811 !important;
     }
   </style>
 </head>
-
-<body class="bg-brand-black text-slate-200 font-sans antialiased selection:bg-brand-cyan selection:text-brand-black min-h-screen">
+<body class="selection:bg-brand-pink selection:text-white">
 
   <!-- ========================================== -->
-  <!-- BARRA DE NAVEGAÇÃO SUPERIOR                -->
+  <!-- BARRA DE TOPO RETRÔ // NAVEGAÇÃO           -->
   <!-- ========================================== -->
-  <header class="sticky top-0 z-50 bg-brand-black/95 backdrop-blur-md border-b border-brand-border px-4 py-3.5">
-    <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+  <header class="sticky top-0 z-50 bg-[#050811] border-b-2 border-brand-cyan">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       
-      <!-- Brand & Campeonato -->
-      <div class="flex items-center gap-3">
-        <a href="#inicio" class="flex items-center gap-2.5 group">
-          <img src="assets/ghost_normal.png" alt="Ghost Logo" class="w-6 h-6 pixelated">
-          <span class="font-bold text-sm tracking-tight text-white group-hover:text-brand-cyan transition-colors">
-            As<span class="text-brand-cyan">S</span>sombrado
-          </span>
-        </a>
-        <span class="hidden sm:inline-block w-px h-4 bg-brand-border"></span>
-        <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs">
-          🥇 1º Lugar UFPI 2026
+      <!-- Logo + Título Pixel -->
+      <a href="#" class="flex items-center gap-3 group">
+        <span class="w-3 h-3 bg-brand-pink inline-block animate-pulse"></span>
+        <span class="font-pixel text-xs md:text-sm tracking-wider text-white group-hover:text-brand-cyan transition-colors">
+          AsSsombrado <span class="text-brand-pink">//</span> UFPI-2026
         </span>
+      </a>
+
+      <!-- Badge de Campeão -->
+      <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1 bg-amber-400 text-[#050811] font-pixel text-[10px] font-bold border-2 border-white shadow-[3px_3px_0px_#b45309]">
+        <span>🥇 1º LUGAR NÍVEL PLENO</span>
       </div>
 
-      <!-- Links de Navegação -->
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-        <a href="#historia" class="hover:text-white transition-colors">A História</a>
-        <a href="#maquete" class="hover:text-white transition-colors">Maquete 3D</a>
-        <a href="#engenharia" class="hover:text-white transition-colors">Engenharia</a>
-        <a href="#mecanicas" class="hover:text-white transition-colors">Mecânica</a>
-        <a href="#codigo" class="hover:text-white transition-colors">Código</a>
-        <a href="#estande" class="hover:text-white transition-colors">Estande</a>
+      <!-- Links Rápidos de Navegação -->
+      <nav class="flex items-center gap-2 font-mono text-xs font-bold">
+        <a href="#simulador" class="px-2.5 py-1.5 bg-[#070b19] border-2 border-brand-cyan text-brand-cyan hover:bg-brand-cyan hover:text-[#050811] transition-all">
+          [1. SIMULADOR]
+        </a>
+        <a href="#maquete" class="px-2.5 py-1.5 bg-[#070b19] border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-white transition-all">
+          [2. MAQUETE 3D]
+        </a>
+        <a href="#diario" class="hidden md:inline-block px-2.5 py-1.5 bg-[#070b19] border-2 border-slate-500 text-slate-300 hover:border-white hover:text-white transition-all">
+          [3. DIÁRIO]
+        </a>
+        <a href="#acervo" class="px-2.5 py-1.5 bg-[#070b19] border-2 border-amber-400 text-amber-300 hover:bg-amber-400 hover:text-[#050811] transition-all">
+          [4. ACERVO]
+        </a>
       </nav>
-
-      <!-- Ação Direta -->
-      <a href="https://github.com/rubual/compet2026-asssombrado" target="_blank" rel="noopener noreferrer" 
-        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-brand-border bg-brand-surface hover:bg-brand-elevated text-xs font-mono text-slate-200 hover:text-white transition-all">
-        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        <span>GitHub</span>
-      </a>
 
     </div>
   </header>
 
   <!-- ========================================== -->
-  <!-- HERO SECTION: HISTÓRIA & O PROJETO        -->
+  <!-- SEÇÃO 1: HERO // DIORAMA HISTÓRICO         -->
   <!-- ========================================== -->
-  <main id="inicio" class="max-w-6xl mx-auto px-4 pt-14 pb-16 md:pt-20 md:pb-24">
+  <section class="relative border-b-2 border-brand-cyan bg-[#070b19] overflow-hidden">
     
-    <!-- Headline e Badge -->
-    <div class="max-w-4xl">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-xs tracking-wide uppercase mb-6">
-        <span>🏆</span> ComPETção 2026 • 1º Lugar Geral (Categoria Pleno) • UFPI
-      </div>
-
-      <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.1] mb-6">
-        Quando uma lanterna real se torna o controle do videogame.
-      </h1>
-
-      <p class="text-base sm:text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl mb-8">
-        Três estudantes do Ensino Médio integraram uma lanterna física, três sensores fotoelétricos montados em câmaras ópticas e um microcontrolador ESP32 a um jogo de terror 2D na Godot Engine — conquistando o primeiro lugar na principal competição de engenharia e tecnologia da Universidade Federal do Piauí.
-      </p>
-
-      <!-- Botões de Ação -->
-      <div class="flex flex-wrap items-center gap-3 font-mono text-xs mb-12">
-        <a href="#maquete" class="px-5 py-3 rounded-lg bg-brand-cyan hover:bg-sky-400 text-brand-black font-semibold transition-all">
-          Interagir com a Maquete 3D ↓
-        </a>
-        <a href="#engenharia" class="px-5 py-3 rounded-lg bg-brand-surface hover:bg-brand-elevated border border-brand-border text-slate-200 transition-all">
-          Ver Engenharia de Hardware
-        </a>
-      </div>
-    </div>
-
-    <!-- Banner Principal do Jogo com Arte Original -->
-    <div class="relative rounded-2xl overflow-hidden border border-brand-border bg-brand-surface p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-8 mb-16">
+    <!-- Moldura de TV CRT com Fundo do Jogo -->
+    <div class="relative max-w-7xl mx-auto px-4 py-12 md:py-20 flex flex-col items-center text-center">
       
-      <div class="flex-1">
-        <span class="font-mono text-xs text-brand-cyan uppercase tracking-wider block mb-2">Jogo Original Godot 4</span>
-        <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">AsSsombrado</h2>
-        <p class="text-sm text-slate-300 leading-relaxed mb-4 max-w-xl">
-          Na escuridão de uma mansão abandonada, assombrações atacam por três direções: porta esquerda, corredor central e janela direita. O jogador precisa levantar a lanterna física, apontar para os alvos reais e exorcizar os espectros antes de ser devorado.
-        </p>
-        <div class="flex items-center gap-4 text-xs font-mono text-slate-400">
-          <span>Engine: Godot 4.x</span>
-          <span>•</span>
-          <span>Firmware: ESP32 C++ BLE</span>
-          <span>•</span>
-          <span>Latência: &lt; 15ms</span>
+      <!-- Selo de Campeonato Máximo -->
+      <div class="mb-6 inline-flex flex-wrap items-center justify-center gap-2 px-4 py-2 bg-[#050811] border-2 border-amber-400 shadow-[6px_6px_0px_#d97706]">
+        <span class="text-amber-400 font-pixel text-xs md:text-sm">★ CAMPEÃO GERAL DA ComPETção 2026 ★</span>
+        <span class="text-xs font-mono font-bold text-slate-300">UFPI • Engenharia Elétrica • Nível Pleno</span>
+      </div>
+
+      <!-- Logotipo Oficial do Jogo (Pixel Art) -->
+      <div class="mb-6 relative w-full max-w-lg mx-auto flex items-center justify-center">
+        <img src="assets/AsSsombradoLogo.png" alt="Logo Oficial AsSsombrado" class="w-full max-h-48 object-contain pixelated drop-shadow-[0_4px_0_rgba(0,0,0,0.8)]">
+      </div>
+
+      <!-- Cenário Diorama do Quarto com Sprites Flutuantes -->
+      <div class="relative w-full max-w-4xl border-4 border-brand-cyan shadow-[10px_10px_0px_#0284c7] bg-[#050811] overflow-hidden mb-8">
+        
+        <!-- Imagem Real do Quarto Escuro do Jogo -->
+        <div class="relative w-full h-[280px] sm:h-[360px] md:h-[420px] overflow-hidden">
+          <img src="assets/quarto_escuro.jpg" alt="Cenário do Quarto Escuro AsSsombrado" class="w-full h-full object-cover pixelated">
+          
+          <!-- Efeito Scanlines CRT + Vinheta Escura -->
+          <div class="absolute inset-0 crt-overlay"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#050811] via-transparent to-[#050811]/60 pointer-events-none"></div>
+
+          <!-- Sprites Reais dos Fantasmas Flutuando nas 3 Portas -->
+          <!-- Esquerda: Fantasma Rápido -->
+          <div class="absolute left-[14%] top-[30%] bob-ghost-1 flex flex-col items-center pointer-events-none">
+            <img src="assets/ghost_rapido.png" alt="Fantasma Rápido" class="w-14 h-14 md:w-20 md:h-20 pixelated drop-shadow-[0_0_10px_#ff2a85]">
+            <span class="mt-1 px-1.5 py-0.5 bg-[#050811] border border-brand-pink font-pixel text-[8px] text-brand-pink">ESQ [D15]</span>
+          </div>
+
+          <!-- Centro: Fantasma Normal -->
+          <div class="absolute left-1/2 -translate-x-1/2 top-[18%] bob-ghost-2 flex flex-col items-center pointer-events-none">
+            <img src="assets/ghost_normal.png" alt="Fantasma Normal" class="w-16 h-16 md:w-24 md:h-24 pixelated drop-shadow-[0_0_10px_#38bdf8]">
+            <span class="mt-1 px-1.5 py-0.5 bg-[#050811] border border-brand-cyan font-pixel text-[8px] text-brand-cyan">CENTRO [D2]</span>
+          </div>
+
+          <!-- Direita: O Inimigo Falso (Esqueleto) -->
+          <div class="absolute right-[14%] top-[26%] bob-ghost-3 flex flex-col items-center pointer-events-none">
+            <img src="assets/inimigo_falso.png" alt="Inimigo Falso Pegadinha" class="w-14 h-14 md:w-20 md:h-20 pixelated drop-shadow-[0_0_10px_#ef4444]">
+            <span class="mt-1 px-1.5 py-0.5 bg-[#050811] border border-red-500 font-pixel text-[8px] text-red-400">⚠️ FALSO [D4]</span>
+          </div>
+
+          <!-- Legenda de Interface HUD no Cenário -->
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between font-mono text-[11px] text-slate-300 bg-[#050811]/90 px-3 py-1.5 border border-brand-cyan">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 bg-green-400 inline-block"></span>
+              <span>SALA MONITORADA: 3 ZONAS DE INCIDÊNCIA</span>
+            </div>
+            <span class="hidden sm:inline text-amber-300 font-bold">LATÊNCIA BLE: &lt; 15MS</span>
+          </div>
+
         </div>
+
       </div>
 
-      <div class="w-full md:w-80 flex-shrink-0 flex items-center justify-center p-4">
-        <img src="assets/AsSsombradoLogo.png" alt="Logo AsSsombrado" class="max-h-36 object-contain">
+      <!-- Resumo de Impacto & Chamada Histórica -->
+      <div class="max-w-3xl mx-auto mb-8">
+        <h1 class="mb-4">
+          QUANDO UMA LANTERNA REAL SE TORNA O CONTROLE DO VIDEOGAME.
+        </h1>
+        <p class="text-sm md:text-base text-slate-300 leading-relaxed font-mono mb-6">
+          Três estudantes do Ensino Médio conceberam uma experiência física e digital completa: acoplaram uma lanterna tática real a três tubos ópticos colimadores com sensores fotoelétricos (LDRs) e um microcontrolador ESP32. Quando o facho de luz atinge os sensores, o sinal é comutado em microssegundos e transmitido via Bluetooth BLE nativo para a Godot Engine 4.
+        </p>
+        
+        <!-- Ficha Técnica Rápida -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs text-left mb-8">
+          <div class="p-3 bg-[#050811] border-2 border-slate-700">
+            <span class="text-slate-500 block text-[10px]">EQUIPE</span>
+            <span class="text-white font-bold">Catavento</span>
+          </div>
+          <div class="p-3 bg-[#050811] border-2 border-slate-700">
+            <span class="text-slate-500 block text-[10px]">ORIENTAÇÃO</span>
+            <span class="text-white font-bold">Prof. Luis Felipe</span>
+          </div>
+          <div class="p-3 bg-[#050811] border-2 border-slate-700">
+            <span class="text-slate-500 block text-[10px]">INSTITUIÇÃO</span>
+            <span class="text-white font-bold">Colégio CEV</span>
+          </div>
+          <div class="p-3 bg-[#050811] border-2 border-amber-400">
+            <span class="text-amber-400 block text-[10px]">COMPETIÇÃO</span>
+            <span class="text-white font-bold">UFPI 1º Lugar</span>
+          </div>
+        </div>
+
+        <!-- Botões de Ação Imediata -->
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a href="#simulador" class="retro-btn-cyan px-6 py-4">
+            ▶ JOGAR NO SIMULADOR WEB
+          </a>
+          <a href="#maquete" class="retro-btn-pink px-6 py-4">
+            🔦 EXAMINAR BANCADA 3D
+          </a>
+          <a href="#diario" class="retro-btn-dark px-6 py-4">
+            📜 DIÁRIO DE ENGENHARIA
+          </a>
+        </div>
+
       </div>
 
     </div>
-
-    <!-- Ficha Técnica e Créditos Oficiais -->
-    <div id="historia" class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-brand-border">
-      
-      <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-        <span class="font-mono text-xs text-slate-400 block mb-1">EQUIPE CATAVENTO</span>
-        <p class="text-sm font-semibold text-white">Mayan Sousa dos Santos</p>
-        <p class="text-sm font-semibold text-white">Ravi Pires Ribeiro</p>
-        <p class="text-sm font-semibold text-white">Rubuão Alves de Brito</p>
-      </div>
-
-      <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-        <span class="font-mono text-xs text-slate-400 block mb-1">ORIENTAÇÃO TÉCNICA</span>
-        <p class="text-sm font-semibold text-white">Prof. Luis Felipe Patrocinio</p>
-        <p class="text-xs text-slate-400 mt-1">Robótica, Hardware & Sistemas Embarcados</p>
-      </div>
-
-      <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-        <span class="font-mono text-xs text-slate-400 block mb-1">INSTITUIÇÃO & FEIRA</span>
-        <p class="text-sm font-semibold text-white">Colégio CEV</p>
-        <p class="text-xs text-slate-400 mt-1">Feira de Robótica InovaCEV • Teresina, PI</p>
-      </div>
-
-    </div>
-
-  </main>
+  </section>
 
   <!-- ========================================== -->
-  <!-- SEÇÃO 2: MAQUETE 3D INTERATIVA             -->
+  <!-- SEÇÃO 2: SIMULADOR INTERATIVO DA MECÂNICA  -->
   <!-- ========================================== -->
-  <section id="maquete" class="py-16 md:py-20 border-t border-brand-border bg-brand-base">
+  <section id="simulador" class="py-16 md:py-24 border-b-2 border-brand-cyan bg-[#050811]">
     <div class="max-w-6xl mx-auto px-4">
       
-      <!-- Cabeçalho da Seção -->
-      <div class="max-w-2xl mb-8">
-        <span class="font-mono text-xs text-brand-cyan tracking-wider uppercase block mb-1">Bancada Experimental</span>
-        <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight mb-2">
-          Maquete 3D da Montagem Física
+      <!-- Cabeçalho do Simulador -->
+      <div class="mb-10 text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-pink text-[#050811] font-pixel text-xs font-bold border border-white mb-3">
+          ★ SIMULADOR INTERATIVO OFICIAL
+        </div>
+        <h2 class="mb-3">
+          EXPERIMENTE A MECÂNICA DO QUARTO ESCURO
         </h2>
-        <p class="text-sm text-slate-300 leading-relaxed">
-          Arraste com o mouse para rotacionar a bancada em 360°, use o scroll para zoom e selecione os alvos para ver a lanterna se movimentar e iluminar cada sensor óptico.
+        <p class="text-sm md:text-base font-mono text-slate-300 max-w-3xl">
+          Mesmo sem o hardware físico em mãos, você pode testar a dinâmica que conquistou os jurados na UFPI. Aponte o mouse para iluminar os setores do quarto, use o teclado nas teclas <strong>[A]</strong>, <strong>[S]</strong> e <strong>[D]</strong>, ou clique diretamente nos circuitos abaixo para ver os pinos comutando de <strong>0V</strong> para <strong>3.3V</strong> em tempo real!
         </p>
       </div>
 
-      <!-- Viewport Three.js -->
-      <div id="maquete3d-container" class="overflow-hidden rounded-2xl p-4">
+      <!-- GABINETE DO SIMULADOR (TELA CRT + CIRCUITO) -->
+      <div class="border-4 border-brand-cyan shadow-[12px_12px_0px_#0284c7] bg-[#070b19] p-4 md:p-6 mb-8">
+        
+        <!-- Placa de Controle e Pontuação Superior -->
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b-2 border-brand-cyan pb-4 mb-4 font-mono text-xs">
           
-          <!-- Controles de Câmera e Seleção de Alvo -->
-          <div class="absolute top-4 left-4 right-4 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 bg-red-500 inline-block animate-ping"></span>
+            <span class="font-bold text-white">SISTEMA ATIVO: BLE RECEPTOR CONECTADO</span>
+          </div>
+
+          <!-- Placar e Vidas -->
+          <div class="flex items-center gap-6 font-pixel text-xs">
+            <div class="text-brand-cyan">
+              PONTOS: <span id="sim-score" class="text-white">000</span>
+            </div>
+            <div class="text-brand-pink">
+              EXORCISMOS: <span id="sim-kills" class="text-white">0</span>
+            </div>
+            <div class="text-amber-400">
+              STATUS: <span id="sim-status" class="text-green-400">RONDA ATIVA</span>
+            </div>
+          </div>
+
+          <!-- Botões de Ação do Simulador -->
+          <div class="flex items-center gap-2">
+            <button onclick="simForceSpawn()" class="px-3 py-1.5 bg-[#050811] border border-brand-cyan text-brand-cyan hover:bg-brand-cyan hover:text-[#050811] font-mono text-xs font-bold transition-all">
+              Nova Incursão
+            </button>
+            <button onclick="simForceFake()" class="px-3 py-1.5 bg-[#050811] border border-red-500 text-red-400 hover:bg-red-500 hover:text-white font-mono text-xs font-bold transition-all">
+              ⚠️ Forçar Pegadinha
+            </button>
+            <button onclick="toggleSound()" id="btn-sound" class="px-3 py-1.5 bg-[#050811] border border-slate-600 text-slate-300 hover:text-white font-mono text-xs font-bold transition-all">
+              🔊 Áudio: ON
+            </button>
+          </div>
+
+        </div>
+
+        <!-- TELA DO JOGO (MONITOR CRT INTERATIVO) -->
+        <div id="sim-crt-screen" class="relative w-full h-[320px] sm:h-[420px] md:h-[480px] bg-[#050811] border-2 border-slate-700 overflow-hidden cursor-crosshair select-none">
+          
+          <!-- Imagem de Fundo do Quarto Escuro -->
+          <img src="assets/quarto_escuro.jpg" alt="Quarto Escuro Simulador" class="w-full h-full object-cover pixelated">
+          
+          <!-- Máscara de Escuridão Geral do Quarto -->
+          <div id="sim-dark-overlay" class="absolute inset-0 bg-[#050811]/90 transition-opacity duration-200"></div>
+
+          <!-- Facho da Lanterna (Luz que ilumina o setor ativo) -->
+          <div id="sim-light-beam" class="absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-150 mix-blend-screen"></div>
+
+          <!-- Flash de Exorcismo (Verde Claro) -->
+          <div id="sim-flash-exorcise" class="absolute inset-0 bg-emerald-400/50 pointer-events-none opacity-0 transition-opacity duration-100"></div>
+
+          <!-- Jumpscare Overlay (Ativado se iluminar o Inimigo Falso) -->
+          <div id="sim-jumpscare-overlay" class="absolute inset-0 bg-red-950/95 flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none z-30 transition-opacity duration-75">
+            <img src="assets/jumpscare.png" alt="Jumpscare Catavento" class="w-48 h-48 md:w-64 md:h-64 object-contain pixelated mb-4 animate-bounce">
+            <h2 class="text-red-500 font-pixel text-xl sm:text-3xl mb-3 tracking-widest">
+              PEGOU NO CATAVENTO!
+            </h2>
+            <p class="font-mono text-sm md:text-base text-white max-w-lg mb-6">
+              Você apontou a lanterna para o <strong>Inimigo Falso</strong>! No escuro da mansão, o instinto de iluminar tudo causou sua derrota imediata.
+            </p>
+            <button onclick="simResetGame()" class="retro-btn-pink px-6 py-3">
+              TENTAR NOVAMENTE
+            </button>
+          </div>
+
+          <!-- As 3 Zonas Clicáveis do Quarto -->
+          <div class="absolute inset-0 grid grid-cols-3 z-10">
             
-            <div class="pointer-events-auto px-3 py-1 rounded-md bg-brand-black/90 border border-brand-border text-xs font-mono text-slate-300">
-              Rotacionar: Botão esquerdo • Zoom: Scroll
+            <!-- ZONA ESQUERDA (PORTA ESQUERDA) -->
+            <div id="zone-esq" onclick="triggerSector('esquerda')" onmouseenter="previewSector('esquerda')" onmouseleave="clearPreview()" 
+              class="relative flex flex-col items-center justify-center border-r border-slate-700/50 hover:bg-brand-cyan/10 transition-colors">
+              
+              <!-- Container do Inimigo Esquerda -->
+              <div id="ghost-container-esq" class="opacity-0 transition-opacity duration-200 flex flex-col items-center">
+                <img id="ghost-img-esq" src="assets/ghost_rapido.png" alt="Fantasma Esquerda" class="w-20 h-20 md:w-28 md:h-28 pixelated">
+                <span id="ghost-tag-esq" class="mt-2 px-2 py-0.5 bg-[#050811] border border-brand-pink font-pixel text-[9px] text-brand-pink">
+                  ESPECTRO
+                </span>
+              </div>
+
+              <!-- Indicador de Zona no Chão -->
+              <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[11px] text-slate-400 bg-[#050811]/80 px-2 py-1 border border-slate-700">
+                <span>[TECLA A]</span>
+                <span class="text-brand-cyan font-bold">PORTA ESQ</span>
+                <span>GPIO 15</span>
+              </div>
             </div>
 
-            <!-- Botões de Disparo da Lanterna -->
-            <div class="flex items-center gap-1.5 pointer-events-auto">
-              <button onclick="aimFlashlight('esquerda')" id="btn-aim-esq" 
-                class="px-3 py-1.5 rounded-md bg-brand-surface hover:bg-brand-elevated border border-brand-border text-xs font-mono text-brand-cyan transition-all">
-                Esquerda [GPIO 15]
-              </button>
-              <button onclick="aimFlashlight('centro')" id="btn-aim-cen" 
-                class="px-3 py-1.5 rounded-md bg-brand-surface hover:bg-brand-elevated border border-brand-border text-xs font-mono text-amber-300 transition-all font-bold bg-amber-500/20">
-                Centro [GPIO 2]
-              </button>
-              <button onclick="aimFlashlight('direita')" id="btn-aim-dir" 
-                class="px-3 py-1.5 rounded-md bg-brand-surface hover:bg-brand-elevated border border-brand-border text-xs font-mono text-pink-300 transition-all">
-                Direita [GPIO 4]
-              </button>
-              <button onclick="reset3DCamera()" 
-                class="px-2.5 py-1.5 rounded-md bg-brand-surface hover:bg-brand-elevated border border-brand-border text-xs font-mono text-slate-400 hover:text-white transition-all">
-                Reset
-              </button>
+            <!-- ZONA CENTRO (CORREDOR CENTRAL) -->
+            <div id="zone-cen" onclick="triggerSector('centro')" onmouseenter="previewSector('centro')" onmouseleave="clearPreview()" 
+              class="relative flex flex-col items-center justify-center border-r border-slate-700/50 hover:bg-amber-400/10 transition-colors">
+              
+              <!-- Container do Inimigo Centro -->
+              <div id="ghost-container-cen" class="opacity-0 transition-opacity duration-200 flex flex-col items-center">
+                <img id="ghost-img-cen" src="assets/ghost_normal.png" alt="Fantasma Centro" class="w-22 h-22 md:w-32 md:h-32 pixelated">
+                <span id="ghost-tag-cen" class="mt-2 px-2 py-0.5 bg-[#050811] border border-amber-400 font-pixel text-[9px] text-amber-300">
+                  APARIÇÃO
+                </span>
+              </div>
+
+              <!-- Indicador de Zona no Chão -->
+              <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[11px] text-slate-400 bg-[#050811]/80 px-2 py-1 border border-slate-700">
+                <span>[TECLA S]</span>
+                <span class="text-amber-300 font-bold">CORREDOR CEN</span>
+                <span>GPIO 2</span>
+              </div>
+            </div>
+
+            <!-- ZONA DIREITA (JANELA DIREITA) -->
+            <div id="zone-dir" onclick="triggerSector('direita')" onmouseenter="previewSector('direita')" onmouseleave="clearPreview()" 
+              class="relative flex flex-col items-center justify-center hover:bg-brand-pink/10 transition-colors">
+              
+              <!-- Container do Inimigo Direita -->
+              <div id="ghost-container-dir" class="opacity-0 transition-opacity duration-200 flex flex-col items-center">
+                <img id="ghost-img-dir" src="assets/inimigo_falso.png" alt="Fantasma Direita" class="w-20 h-20 md:w-28 md:h-28 pixelated">
+                <span id="ghost-tag-dir" class="mt-2 px-2 py-0.5 bg-[#050811] border border-red-500 font-pixel text-[9px] text-red-400">
+                  ⚠️ FALSO
+                </span>
+              </div>
+
+              <!-- Indicador de Zona no Chão -->
+              <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[11px] text-slate-400 bg-[#050811]/80 px-2 py-1 border border-slate-700">
+                <span>[TECLA D]</span>
+                <span class="text-brand-pink font-bold">JANELA DIR</span>
+                <span>GPIO 4</span>
+              </div>
             </div>
 
           </div>
 
-          <!-- HUD Inferior da Maquete -->
-          <div class="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">
-            <div class="p-3.5 rounded-xl bg-brand-black/90 border border-brand-border backdrop-blur-sm flex items-center justify-between flex-wrap gap-2 pointer-events-auto">
-              <div class="flex items-center gap-3">
-                <span id="hud-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-                <div>
-                  <span id="hud-component-title" class="font-bold text-sm text-white block">SENSOR CENTRO ILUMINADO</span>
-                  <span id="hud-component-desc" class="text-xs text-slate-400">Facho de luz focado no tubo óptico central. O sinal digital foi comutado para HIGH.</span>
+          <!-- Linhas de TV CRT -->
+          <div class="absolute inset-0 crt-overlay pointer-events-none"></div>
+
+        </div>
+
+        <!-- PAINEL DE TELEMETRIA DOS CIRCUITOS DE HARDWARE (EM TEMPO REAL) -->
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-3 font-mono text-xs">
+            <span class="text-brand-cyan font-bold tracking-wider uppercase">
+              ⚡ BANCO DE DADOS DOS CIRCUITOS ESP32 (LEITURA EM TEMPO REAL)
+            </span>
+            <span class="text-slate-400">Clique nas caixas abaixo para acionar a lanterna naquele canal</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- CANAL ESQUERDA: GPIO 15 -->
+            <div id="card-hw-esq" onclick="triggerSector('esquerda')" 
+              class="p-4 bg-[#050811] border-2 border-brand-cyan hover:border-white transition-all cursor-pointer shadow-[4px_4px_0px_#0284c7]">
+              
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-pixel text-[10px] text-brand-cyan">CANAL ESQ [D15]</span>
+                <span id="hw-badge-esq" class="font-mono text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                  LOW (0)
+                </span>
+              </div>
+
+              <!-- Medidor de Tensão do Divisor de 10kΩ -->
+              <div class="mb-3">
+                <div class="flex items-center justify-between font-mono text-xs text-slate-300 mb-1">
+                  <span>Tensão Divisor 10kΩ:</span>
+                  <strong id="hw-volt-esq" class="text-brand-cyan">0.21 V</strong>
+                </div>
+                <div class="w-full h-3 bg-slate-900 border border-slate-700 overflow-hidden">
+                  <div id="hw-bar-esq" class="h-full bg-brand-cyan transition-all duration-150" style="width: 7%;"></div>
                 </div>
               </div>
-              <span id="hud-pin-badge" class="font-mono text-xs px-2.5 py-1 rounded bg-brand-surface border border-brand-border text-slate-200">
+
+              <!-- Despacho BLE Bluetooth -->
+              <div class="pt-2 border-t border-slate-800 font-mono text-[11px] flex items-center justify-between">
+                <span class="text-slate-400">Pacote BLE HID:</span>
+                <span id="hw-ble-esq" class="text-slate-400 font-bold">BUTTON_1: IDLE</span>
+              </div>
+            </div>
+
+            <!-- CANAL CENTRO: GPIO 2 -->
+            <div id="card-hw-cen" onclick="triggerSector('centro')" 
+              class="p-4 bg-[#050811] border-2 border-amber-400 hover:border-white transition-all cursor-pointer shadow-[4px_4px_0px_#d97706]">
+              
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-pixel text-[10px] text-amber-300">CANAL CEN [D2]</span>
+                <span id="hw-badge-cen" class="font-mono text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                  LOW (0)
+                </span>
+              </div>
+
+              <!-- Medidor de Tensão do Divisor de 10kΩ -->
+              <div class="mb-3">
+                <div class="flex items-center justify-between font-mono text-xs text-slate-300 mb-1">
+                  <span>Tensão Divisor 10kΩ:</span>
+                  <strong id="hw-volt-cen" class="text-amber-300">0.24 V</strong>
+                </div>
+                <div class="w-full h-3 bg-slate-900 border border-slate-700 overflow-hidden">
+                  <div id="hw-bar-cen" class="h-full bg-amber-400 transition-all duration-150" style="width: 8%;"></div>
+                </div>
+              </div>
+
+              <!-- Despacho BLE Bluetooth -->
+              <div class="pt-2 border-t border-slate-800 font-mono text-[11px] flex items-center justify-between">
+                <span class="text-slate-400">Pacote BLE HID:</span>
+                <span id="hw-ble-cen" class="text-slate-400 font-bold">BUTTON_2: IDLE</span>
+              </div>
+            </div>
+
+            <!-- CANAL DIREITA: GPIO 4 -->
+            <div id="card-hw-dir" onclick="triggerSector('direita')" 
+              class="p-4 bg-[#050811] border-2 border-brand-pink hover:border-white transition-all cursor-pointer shadow-[4px_4px_0px_#db2777]">
+              
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-pixel text-[10px] text-brand-pink">CANAL DIR [D4]</span>
+                <span id="hw-badge-dir" class="font-mono text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                  LOW (0)
+                </span>
+              </div>
+
+              <!-- Medidor de Tensão do Divisor de 10kΩ -->
+              <div class="mb-3">
+                <div class="flex items-center justify-between font-mono text-xs text-slate-300 mb-1">
+                  <span>Tensão Divisor 10kΩ:</span>
+                  <strong id="hw-volt-dir" class="text-brand-pink">0.19 V</strong>
+                </div>
+                <div class="w-full h-3 bg-slate-900 border border-slate-700 overflow-hidden">
+                  <div id="hw-bar-dir" class="h-full bg-brand-pink transition-all duration-150" style="width: 6%;"></div>
+                </div>
+              </div>
+
+              <!-- Despacho BLE Bluetooth -->
+              <div class="pt-2 border-t border-slate-800 font-mono text-[11px] flex items-center justify-between">
+                <span class="text-slate-400">Pacote BLE HID:</span>
+                <span id="hw-ble-dir" class="text-slate-400 font-bold">BUTTON_3: IDLE</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 3: BANCADA EXPERIMENTAL // MAQUETE 3D-->
+  <!-- ========================================== -->
+  <section id="maquete" class="py-16 md:py-24 border-b-2 border-brand-cyan bg-[#070b19]">
+    <div class="max-w-6xl mx-auto px-4">
+      
+      <div class="mb-8 text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-cyan text-[#050811] font-pixel text-xs border border-white mb-3">
+          🔦 MAQUETE 3D VIRTUAL DA BANCADA FÍSICA
+        </div>
+        <h2 class="mb-2">
+          RECONSTRUÇÃO EM 360° DA MONTAGEM REAL
+        </h2>
+        <p class="text-sm md:text-base font-mono text-slate-300 max-w-3xl">
+          Arraste com o botão esquerdo para girar a bancada em qualquer ângulo, use o scroll do mouse para aproximar os detalhes da placa ESP32 e clique nos botões para posicionar a lanterna e disparar o facho de luz diretamente na boca de cada tubo colimador óptico.
+        </p>
+      </div>
+
+      <!-- FRAME RETRÔ DA MAQUETE 3D -->
+      <div class="border-4 border-brand-cyan shadow-[10px_10px_0px_#0284c7] bg-[#050811]">
+        
+        <!-- Barra de Ferramentas da Maquete -->
+        <div class="p-4 bg-[#070b19] border-b-2 border-brand-cyan flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+          
+          <div class="flex items-center gap-2 text-slate-300">
+            <span class="w-2.5 h-2.5 bg-brand-cyan inline-block"></span>
+            <span>Controles: Botão Esquerdo = Girar • Scroll = Zoom</span>
+          </div>
+
+          <!-- Botões de Alvo da Lanterna -->
+          <div class="flex items-center gap-2">
+            <button onclick="aimFlashlight('esquerda')" id="btn-aim-esq" 
+              class="px-3 py-1.5 bg-[#050811] border-2 border-brand-cyan text-brand-cyan font-bold hover:bg-brand-cyan hover:text-[#050811] transition-all">
+              Alvo Esquerda [GPIO 15]
+            </button>
+            <button onclick="aimFlashlight('centro')" id="btn-aim-cen" 
+              class="px-3 py-1.5 bg-amber-400 border-2 border-white text-[#050811] font-bold transition-all">
+              Alvo Centro [GPIO 2]
+            </button>
+            <button onclick="aimFlashlight('direita')" id="btn-aim-dir" 
+              class="px-3 py-1.5 bg-[#050811] border-2 border-brand-pink text-brand-pink font-bold hover:bg-brand-pink hover:text-white transition-all">
+              Alvo Direita [GPIO 4]
+            </button>
+            <button onclick="reset3DCamera()" 
+              class="px-2.5 py-1.5 bg-[#050811] border border-slate-600 text-slate-400 hover:text-white transition-all">
+              Reset
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Viewport Three.js -->
+        <div id="maquete3d-container" class="relative">
+          
+          <!-- HUD Flutuante Inferior -->
+          <div class="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">
+            <div class="p-3 bg-[#050811]/95 border-2 border-brand-cyan flex items-center justify-between flex-wrap gap-2 pointer-events-auto shadow-[4px_4px_0px_#0284c7]">
+              <div class="flex items-center gap-3">
+                <span id="hud-status-dot" class="w-3 h-3 bg-amber-400 inline-block"></span>
+                <div>
+                  <span id="hud-component-title" class="font-pixel text-[11px] text-white block">SENSOR CENTRO ILUMINADO</span>
+                  <span id="hud-component-desc" class="font-mono text-xs text-slate-300">Facho de luz encaixado com precisão no tubo colimador. O LDR acionou o pino digital.</span>
+                </div>
+              </div>
+              <span id="hud-pin-badge" class="font-pixel text-[10px] px-3 py-1 bg-amber-400 text-[#050811] font-bold border border-white">
                 GPIO 2 = HIGH
               </span>
             </div>
@@ -346,230 +710,116 @@
 
         </div>
 
-      <!-- Seletor de Pontos de Foco -->
-      <div class="flex flex-wrap items-center justify-around gap-2 p-3 mt-3 font-mono text-xs">
-        <button onclick="focusComponent('overview')" class="px-4 py-2 rounded-lg bg-brand-surface hover:bg-brand-elevated text-slate-300 hover:text-white transition-all text-center">
-          Visão Geral
-        </button>
-        <button onclick="focusComponent('esp32')" class="px-4 py-2 rounded-lg bg-brand-surface hover:bg-brand-elevated text-slate-300 hover:text-white transition-all text-center">
-          ESP32 &amp; BLE
-        </button>
-        <button onclick="focusComponent('ldrs')" class="px-4 py-2 rounded-lg bg-brand-surface hover:bg-brand-elevated text-slate-300 hover:text-white transition-all text-center">
-          Câmaras dos LDRs
-        </button>
-        <button onclick="focusComponent('resistors')" class="px-4 py-2 rounded-lg bg-brand-surface hover:bg-brand-elevated text-slate-300 hover:text-white transition-all text-center">
-          Divisores de 10kΩ
-        </button>
+        <!-- Barra Inferior de Foco em Componentes -->
+        <div class="p-3 bg-[#070b19] border-t-2 border-brand-cyan flex flex-wrap items-center justify-around gap-2 font-mono text-xs">
+          <button onclick="focusComponent('overview')" class="px-3 py-1.5 bg-[#050811] border border-slate-700 text-slate-300 hover:border-brand-cyan hover:text-brand-cyan transition-all">
+            [ Visão Geral da Bancada ]
+          </button>
+          <button onclick="focusComponent('esp32')" class="px-3 py-1.5 bg-[#050811] border border-slate-700 text-slate-300 hover:border-brand-cyan hover:text-brand-cyan transition-all">
+            [ Microcontrolador ESP32 BLE ]
+          </button>
+          <button onclick="focusComponent('ldrs')" class="px-3 py-1.5 bg-[#050811] border border-slate-700 text-slate-300 hover:border-brand-cyan hover:text-brand-cyan transition-all">
+            [ Tubos Colimadores e LDRs ]
+          </button>
+          <button onclick="focusComponent('resistors')" class="px-3 py-1.5 bg-[#050811] border border-slate-700 text-slate-300 hover:border-brand-cyan hover:text-brand-cyan transition-all">
+            [ Divisores de Tensão 10kΩ ]
+          </button>
+        </div>
+
       </div>
 
     </div>
   </section>
 
   <!-- ========================================== -->
-  <!-- SEÇÃO 3: ENGENHARIA & SOLUÇÕES DE HARDWARE -->
+  <!-- SEÇÃO 4: DIÁRIO DE ENGENHARIA & BASTIDORES -->
   <!-- ========================================== -->
-  <section id="engenharia" class="py-16 md:py-24 border-t border-brand-border max-w-6xl mx-auto px-4">
-    
-    <div class="max-w-2xl mb-12">
-      <span class="font-mono text-xs text-brand-cyan tracking-wider uppercase block mb-1">Arquitetura de Hardware</span>
-      <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight mb-3">
-        Como a Engenharia Superou as Limitações do ESP32
-      </h2>
-      <p class="text-sm md:text-base text-slate-300 leading-relaxed">
-        Durante o desenvolvimento do hardware para a ComPETção 2026, a equipe enfrentou desafios elétricos reais que exigiram soluções criativas de circuito para garantir zero latência.
-      </p>
-    </div>
-
-    <!-- Cards de Engenharia: As 4 Soluções Técnicas (Sem containers aninhados) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-      
-      <!-- Card 1: Conflito ADC2 -->
-      <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="font-mono text-xs text-amber-400">DESAFIO #1</span>
-            <span class="font-mono text-xs text-slate-400">Hardware ESP32</span>
-          </div>
-          <h3 class="text-lg font-bold text-white mb-2">O Bloqueio do ADC2 com Bluetooth</h3>
-          <p class="text-sm text-slate-300 leading-relaxed mb-4">
-            No ESP32, quando o rádio Wi-Fi ou Bluetooth BLE está ativo, todos os canais do conversor analógico <strong>ADC2</strong> são desligados por conflito de hardware interno. Leituras analógicas comuns de sensores de luz travam ou retornam ruído imprevisível.
-          </p>
-        </div>
-        <div class="pt-3 border-t border-brand-border font-mono text-xs text-amber-300/95 leading-relaxed">
-          ✓ Solução: Em vez de leituras analógicas com <code>analogRead()</code>, utilizamos divisores de tensão calculados e lemos os estados como sinais digitais puros através de <code>digitalRead()</code> nos pinos 15, 2 e 4.
-        </div>
-      </div>
-
-      <!-- Card 2: Divisor de Tensão -->
-      <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="font-mono text-xs text-brand-cyan">SOLUÇÃO #2</span>
-            <span class="font-mono text-xs text-slate-400">Circuito Elétrico</span>
-          </div>
-          <h3 class="text-lg font-bold text-white mb-2">Divisor de Tensão com Resistor de 10kΩ</h3>
-          <p class="text-sm text-slate-300 leading-relaxed mb-4">
-            O LDR varia sua resistência de mais de 100kΩ no escuro para menos de 1kΩ sob luz direta. Montado em série com um resistor pull-down de 10kΩ alimentado em 3.3V, a tensão no nó do sensor varia drasticamente de 0.2V para mais de 3.0V.
-          </p>
-        </div>
-        <div class="pt-3 border-t border-brand-border font-mono text-xs text-brand-cyan/95 leading-relaxed">
-          ✓ Comutação Digital: Como a lógica CMOS do ESP32 reconhece tensões acima de ~2.4V como HIGH e abaixo de ~0.8V como LOW, o circuito funciona como um gatilho digital ultraestável.
-        </div>
-      </div>
-
-      <!-- Card 3: Tubos Colimadores -->
-      <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="font-mono text-xs text-brand-emerald">DESIGN ÓPTICO #3</span>
-            <span class="font-mono text-xs text-slate-400">Blindagem de Luz</span>
-          </div>
-          <h3 class="text-lg font-bold text-white mb-2">Tubos Colimadores Anti-Ruído</h3>
-          <p class="text-sm text-slate-300 leading-relaxed mb-4">
-            A sala de avaliação da UFPI possuía lâmpadas fluorescentes que poderiam acionar os LDRs acidentalmente. Para isolar o facho da lanterna física, cada sensor foi encapsulado no fundo de um tubo colimador escuro.
-          </p>
-        </div>
-        <div class="pt-3 border-t border-brand-border font-mono text-xs text-emerald-300/95 leading-relaxed">
-          ✓ Seletividade Angular: Apenas fachos de luz que entram em linha reta (dentro de um ângulo de &plusmn;15&deg;) alcançam o sensor, eliminando falsos positivos provocados pelo teto ou flashes laterais.
-        </div>
-      </div>
-
-      <!-- Card 4: Protocolo BLE HID -->
-      <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="font-mono text-xs text-brand-crimson">CONECTIVIDADE #4</span>
-            <span class="font-mono text-xs text-slate-400">Firmware BLE</span>
-          </div>
-          <h3 class="text-lg font-bold text-white mb-2">Emulação Nativa de Gamepad Sem Fio</h3>
-          <p class="text-sm text-slate-300 leading-relaxed mb-4">
-            Utilizando a biblioteca <code>BleGamepad.h</code> e o stack NimBLE, o ESP32 emparelha com o computador hospedeiro como um controle HID padrão de videogame (com botões 1, 2 e 3).
-          </p>
-        </div>
-        <div class="pt-3 border-t border-brand-border font-mono text-xs text-pink-300/95 leading-relaxed">
-          ✓ Plug and Play: A Godot Engine recebe os eventos como entradas de joystick convencionais (<code>JOY_BUTTON_A</code>, <code>JOY_BUTTON_B</code>, <code>JOY_BUTTON_X</code>) sem necessidade de portas seriais ou drivers proprietários.
-        </div>
-      </div>
-
-    </div>
-
-    <!-- O Caminho do Sinal: Do Físico ao Digital (Card único horizontal) -->
-    <div class="mb-6">
-      <h3 class="text-base font-bold text-white mb-4">Pipeline do Sinal em Tempo Real</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono text-xs text-center">
-        
-        <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-          <span class="text-xl block mb-1">🔦</span>
-          <span class="font-bold text-white block">1. Lanterna</span>
-          <span class="text-slate-400 text-[11px]">Facho de Luz Real</span>
-        </div>
-
-        <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-          <span class="text-xl block mb-1">☀️</span>
-          <span class="font-bold text-white block">2. Sensor LDR</span>
-          <span class="text-slate-400 text-[11px]">&Delta;R: 100k&Omega; &rarr; 800&Omega;</span>
-        </div>
-
-        <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-          <span class="text-xl block mb-1">⚡</span>
-          <span class="font-bold text-white block">3. Divisor 10k&Omega;</span>
-          <span class="text-slate-400 text-[11px]">Sinal &gt; 3.0V (HIGH)</span>
-        </div>
-
-        <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-          <span class="text-xl block mb-1">🧠</span>
-          <span class="font-bold text-white block">4. ESP32 BLE</span>
-          <span class="text-slate-400 text-[11px]">Despacho HID BUTTON</span>
-        </div>
-
-        <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
-          <span class="text-xl block mb-1">🎮</span>
-          <span class="font-bold text-white block">5. Godot 4</span>
-          <span class="text-slate-400 text-[11px]">Exorciza ou Game Over</span>
-        </div>
-
-      </div>
-    </div>
-
-  </section>
-
-  <!-- ========================================== -->
-  <!-- SEÇÃO 4: MECÂNICA DE JOGO & O INIMIGO FALSO-->
-  <!-- ========================================== -->
-  <section id="mecanicas" class="py-16 md:py-24 border-t border-brand-border bg-brand-base">
+  <section id="diario" class="py-16 md:py-24 border-b-2 border-brand-cyan bg-[#050811]">
     <div class="max-w-6xl mx-auto px-4">
       
-      <div class="max-w-2xl mb-12">
-        <span class="font-mono text-xs text-brand-cyan tracking-wider uppercase block mb-1">Design de Sobrevivência</span>
-        <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight mb-3">
-          As Regras do Quarto Escuro
+      <div class="mb-12 text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-pink text-[#050811] font-pixel text-xs font-bold border border-white mb-3">
+          📜 CÁPSULA DO TEMPO // LOG HISTÓRICO
+        </div>
+        <h2 class="mb-3">
+          DIÁRIO DE ENGENHARIA: DA IDEIA AO 1º LUGAR
         </h2>
-        <p class="text-sm md:text-base text-slate-300 leading-relaxed">
-          Cada rodada coloca o jogador sob pressão psicológica constante. Os fantasmas atacam por três posições mapeadas fisicamente, mas a chave para a vitória está no controle do próprio impulso.
+        <p class="text-sm md:text-base font-mono text-slate-300 max-w-3xl">
+          A vitória na ComPETção 2026 não foi por acaso. Foi o resultado de superação de desafios reais de engenharia elétrica e computação embarcada. Confira o registro fiel das três fases do projeto:
         </p>
       </div>
 
-      <!-- Galeria dos Fantasmas Comuns (Sem caixas aninhadas) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <!-- LINHA DO TEMPO VERTICAL BRUTALISTA -->
+      <div class="relative border-l-4 border-brand-cyan pl-6 md:pl-10 space-y-12">
         
-        <!-- Fantasma Normal -->
-        <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border flex flex-col items-center text-center">
-          <div class="w-20 h-20 flex items-center justify-center mb-3">
-            <img src="assets/ghost_normal.png" alt="Fantasma Normal" class="w-16 h-16 pixelated">
+        <!-- FASE 1 -->
+        <div class="relative">
+          <!-- Marcador Retrô na Linha -->
+          <div class="absolute -left-[35px] md:-left-[51px] top-0 w-6 h-6 bg-brand-cyan border-2 border-white flex items-center justify-center font-pixel text-[10px] text-[#050811] font-bold">
+            1
           </div>
-          <span class="font-mono text-xs text-brand-cyan mb-1">Espectro Azul</span>
-          <h3 class="text-base font-bold text-white mb-2">Aparição Padrão</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Emerge nas portas laterais ou no centro. Exige que o jogador aponte a lanterna na direção certa com calma e firmeza para dissipar a névoa.
-          </p>
+
+          <div class="p-6 bg-[#070b19] border-2 border-brand-cyan shadow-[6px_6px_0px_#0284c7]">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2 font-mono text-xs">
+              <span class="px-2 py-0.5 bg-brand-cyan text-[#050811] font-bold">SETEMBRO DE 2026</span>
+              <span class="text-slate-400 font-mono">ARQUITETURA DE SOFTWARE</span>
+            </div>
+            <h3 class="mb-3 text-white">
+              Fase 1: O Protótipo Virtual na Godot Engine 4
+            </h3>
+            <p class="font-mono text-sm text-slate-300 leading-relaxed mb-4">
+              Antes de montar qualquer circuito elétrico, a Equipe Catavento estabeleceu uma separação estrita entre a lógica de gameplay e a base de dados de rodadas. Criamos o arquivo <code>levels.gd</code> armazenando dicionários estruturados de ondas de ataque (posições, tipos de espectros e intervalos) e o <code>main.gd</code> controlando a máquina de estados finitos do quarto.
+            </p>
+            <div class="p-3 bg-[#050811] border-l-4 border-brand-cyan font-mono text-xs text-slate-300 leading-relaxed">
+              💡 <strong>O Teste das Teclas [A], [S] e [D]:</strong> A dinâmica de susto e o instinto da pegadinha do <em>Inimigo Falso</em> foram calibrados primeiro no teclado mecânico, provando que a mecânica de sobrevivência por luz periférica gerava adrenalina autêntica.
+            </div>
+          </div>
         </div>
 
-        <!-- Fantasma Rápido -->
-        <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border flex flex-col items-center text-center">
-          <div class="w-20 h-20 flex items-center justify-center mb-3">
-            <img src="assets/ghost_rapido.png" alt="Fantasma Rápido" class="w-16 h-16 pixelated">
+        <!-- FASE 2 -->
+        <div class="relative">
+          <div class="absolute -left-[35px] md:-left-[51px] top-0 w-6 h-6 bg-brand-pink border-2 border-white flex items-center justify-center font-pixel text-[10px] text-[#050811] font-bold">
+            2
           </div>
-          <span class="font-mono text-xs text-pink-400 mb-1">Sombra Relâmpago</span>
-          <h3 class="text-base font-bold text-white mb-2">Espectro Veloz</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Surge com som abrupto e avança em disparada. Exige coordenação motora instantânea: qualquer hesitação de meio segundo resulta em ataque.
-          </p>
+
+          <div class="p-6 bg-[#070b19] border-2 border-brand-pink shadow-[6px_6px_0px_#db2777]">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2 font-mono text-xs">
+              <span class="px-2 py-0.5 bg-brand-pink text-[#050811] font-bold">O CONFLITO DO HARDWARE</span>
+              <span class="text-slate-400 font-mono">ENGENHARIA ELETRÔNICA EMBARCADA</span>
+            </div>
+            <h3 class="mb-3 text-white">
+              Fase 2: O Conflito do ADC2 no ESP32 & A Sacada do Divisor de 10kΩ
+            </h3>
+            <p class="font-mono text-sm text-slate-300 leading-relaxed mb-4">
+              Ao montar os sensores LDR de 2 terminais na protoboard física, deparamo-nos com uma limitação crítica da arquitetura do microcontrolador ESP-WROOM-32: <strong>quando o rádio Wi-Fi ou Bluetooth BLE está ativo, todos os canais analógicos do ADC2 são desativados por hardware</strong>. Leituras analógicas comuns de luz travavam ou retornavam ruído imprevisível.
+            </p>
+            <div class="p-3 bg-[#050811] border-l-4 border-brand-pink font-mono text-xs text-pink-200 leading-relaxed">
+              ⚡ <strong>A Solução dos Divisores com Resistor Pull-Down de 10kΩ:</strong> Em vez de adquirir componentes externos caros, calculamos e montamos circuitos divisores de tensão com resistores pull-down de 10kΩ em 3.3V. Sob luz da lanterna, a resistência do LDR cai de &gt;100kΩ para &lt;1kΩ, fazendo a tensão saltar bruscamente de 0.2V para mais de 3.0V. Isso permitiu ler os sensores diretamente como sinais digitais puros (<code>HIGH/LOW</code>) via <code>digitalRead()</code> nos pinos D15, D2 e D4, alcançando latência de disparo inferior a 15 milissegundos sem usar o conversor analógico!
+            </div>
+          </div>
         </div>
 
-        <!-- Fantasma Lento -->
-        <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border flex flex-col items-center text-center">
-          <div class="w-20 h-20 flex items-center justify-center mb-3">
-            <img src="assets/ghost_lento.png" alt="Fantasma Lento" class="w-16 h-16 pixelated">
+        <!-- FASE 3 -->
+        <div class="relative">
+          <div class="absolute -left-[35px] md:-left-[51px] top-0 w-6 h-6 bg-amber-400 border-2 border-white flex items-center justify-center font-pixel text-[10px] text-[#050811] font-bold">
+            3
           </div>
-          <span class="font-mono text-xs text-emerald-400 mb-1">Alma Errante</span>
-          <h3 class="text-base font-bold text-white mb-2">A Distração</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Move-se vagarosamente, dando a falsa impressão de segurança. Sua verdadeira função no jogo é prender a atenção do jogador enquanto outro fantasma aparece nas suas costas.
-          </p>
-        </div>
 
-      </div>
-
-      <!-- O Inimigo Falso: A Armadilha Psicológica (Container direto) -->
-      <div class="rounded-2xl border border-brand-crimson/50 bg-red-950/20 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6">
-        
-        <div class="w-24 h-24 flex-shrink-0 flex items-center justify-center">
-          <img src="assets/inimigo_falso.png" alt="Inimigo Falso" class="w-20 h-20 pixelated">
-        </div>
-
-        <div class="flex-1 text-center md:text-left">
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-red-500/20 text-red-300 font-mono text-xs mb-2">
-            ⚠️ O Inimigo Falso
+          <div class="p-6 bg-[#070b19] border-2 border-amber-400 shadow-[6px_6px_0px_#d97706]">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2 font-mono text-xs">
+              <span class="px-2 py-0.5 bg-amber-400 text-[#050811] font-bold">09 DE OUTUBRO DE 2026</span>
+              <span class="text-amber-300 font-mono">UFPI • 1º LUGAR GERAL</span>
+            </div>
+            <h3 class="mb-3 text-white">
+              Fase 3: Calibração em Campo & Conquista da ComPETção 2026
+            </h3>
+            <p class="font-mono text-sm text-slate-300 leading-relaxed mb-4">
+              No dia da apresentação no Centro de Tecnologia da UFPI, as lâmpadas fluorescentes tubulares da sala de avaliação causavam disparos espúrios nos LDRs. Para blindar o circuito, encapsulamos cada sensor no fundo de <strong>tubos colimadores escuros</strong>, garantindo seletividade angular de luz restrita a &plusmn;15°.
+            </p>
+            <div class="p-3 bg-[#050811] border-l-4 border-amber-400 font-mono text-xs text-amber-200 leading-relaxed">
+              🏆 <strong>Veredito da Banca Avaliadora:</strong> Os jurados da Engenharia Elétrica da UFPI elogiaram a solução criativa para o bloqueio do ADC2, a integração robusta com Bluetooth HID Gamepad e a experiência de jogo imersiva, concedendo o <strong>1º LUGAR GERAL no Nível Pleno</strong> para a Equipe Catavento do Colégio CEV.
+            </div>
           </div>
-          <h3 class="text-xl md:text-2xl font-bold text-white mb-2">
-            No escuro, o instinto humano é iluminar o desconhecido. Aqui, isso te destrói.
-          </h3>
-          <p class="text-sm text-slate-300 leading-relaxed mb-3">
-            O Esqueleto Falso é a grande pegadinha concebida pela Equipe Catavento. Ele aparece silenciosamente em um dos cantos da sala. Se o jogador apontar a lanterna por susto ou impulso, a tela se enche de estática, soa o grito do jumpscare e o jogo é interrompido com a frase clássica: <strong class="text-red-400">"PEGOU NO CATAVENTO!"</strong>.
-          </p>
-          <p class="text-xs font-mono text-red-300">
-            A única forma de sobreviver: conter o braço, segurar o facho e deixar que ele desapareça sozinho na penumbra.
-          </p>
         </div>
 
       </div>
@@ -578,88 +828,182 @@
   </section>
 
   <!-- ========================================== -->
-  <!-- SEÇÃO 5: RAIO-X DO CÓDIGO FONTE            -->
+  <!-- SEÇÃO 5: ACERVO DO PROJETO & DOCUMENTOS    -->
   <!-- ========================================== -->
-  <section id="codigo" class="py-16 md:py-24 border-t border-brand-border max-w-6xl mx-auto px-4">
-    
-    <div class="max-w-2xl mb-10">
-      <span class="font-mono text-xs text-brand-cyan tracking-wider uppercase block mb-1">Inspeção de Código</span>
-      <h2 class="text-2xl md:text-3xl font-bold text-white tracking-tight mb-2">
-        Código Fonte Oficial do Projeto
-      </h2>
-      <p class="text-sm text-slate-300 leading-relaxed">
-        Trechos reais extraídos diretamente dos repositórios do jogo na Godot Engine e do microcontrolador ESP32.
-      </p>
-    </div>
-
-    <!-- IDE Container -->
-    <div class="rounded-2xl overflow-hidden border border-brand-border bg-brand-surface">
+  <section id="acervo" class="py-16 md:py-24 border-b-2 border-brand-cyan bg-[#070b19]">
+    <div class="max-w-6xl mx-auto px-4">
       
-      <!-- Barra Superior da IDE -->
-      <div class="flex items-center justify-between px-4 py-3 bg-brand-black border-b border-brand-border">
-        
-        <div class="flex items-center gap-2">
-          <button onclick="switchTab('godot')" id="tab-btn-godot" 
-            class="px-3 py-1.5 rounded-lg bg-brand-elevated border border-brand-cyan text-brand-cyan font-mono text-xs flex items-center gap-2 transition-all font-semibold">
-            <img src="assets/godot_icon.svg" alt="Godot" class="w-3.5 h-3.5">
-            <span>main.gd (Godot 4)</span>
-          </button>
+      <div class="mb-10 text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-400 text-[#050811] font-pixel text-xs border border-white mb-3">
+          🏆 ACERVO HISTÓRICO & DOCUMENTOS OFICIAIS
+        </div>
+        <h2 class="mb-2">
+          MEMÓRIA DA CONQUISTA & REGISTROS REAIS
+        </h2>
+        <p class="text-sm md:text-base font-mono text-slate-300 max-w-3xl">
+          Documentos, cenários originais e arquivos preservados como cápsula do tempo da ComPETção 2026.
+        </p>
+      </div>
 
-          <button onclick="switchTab('esp32')" id="tab-btn-esp32" 
-            class="px-3 py-1.5 rounded-lg bg-brand-surface border border-transparent text-slate-400 hover:text-white font-mono text-xs flex items-center gap-2 transition-all">
-            <span>🧠</span>
-            <span>main.cpp (ESP32 C++)</span>
-          </button>
+      <!-- Grid de Imagens do Acervo -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        
+        <!-- Cartão 1: Registro do Quarto Escuro -->
+        <div class="p-4 bg-[#050811] border-2 border-brand-cyan shadow-[6px_6px_0px_#0284c7]">
+          <div class="w-full h-48 bg-slate-900 border border-slate-700 overflow-hidden mb-3">
+            <img src="assets/quarto_escuro.jpg" alt="Cenário Quarto Escuro" class="w-full h-full object-cover pixelated">
+          </div>
+          <span class="font-pixel text-[9px] text-brand-cyan block mb-1">ARTE OFICIAL DO JOGO</span>
+          <h3 class="mb-2 text-white font-bold">O Quarto Escuro Original</h3>
+          <p class="text-xs font-mono text-slate-400">
+            Cenário 16-bits desenhado para a Godot 4. Mostra o espelho assombrado, a TV CRT retrô e os três pontos de invasão dos espíritos.
+          </p>
         </div>
 
-        <button onclick="copyCurrentCode()" class="text-xs font-mono text-slate-400 hover:text-brand-cyan transition-colors">
-          <span id="copy-text">Copiar Código</span>
-        </button>
+        <!-- Cartão 2: O Jumpscare Clássico -->
+        <div class="p-4 bg-[#050811] border-2 border-brand-pink shadow-[6px_6px_0px_#db2777]">
+          <div class="w-full h-48 bg-slate-900 border border-slate-700 overflow-hidden mb-3 flex items-center justify-center">
+            <img src="assets/jumpscare.png" alt="Jumpscare Bocudo" class="w-36 h-36 object-contain pixelated">
+          </div>
+          <span class="font-pixel text-[9px] text-brand-pink block mb-1">MECÂNICA DE TERROR</span>
+          <h3 class="mb-2 text-white font-bold">"Pegou no Catavento!"</h3>
+          <p class="text-xs font-mono text-slate-400">
+            A arte do monstro bocudo que invade a tela inteira quando o competidor aponta a lanterna apressadamente para o Inimigo Falso.
+          </p>
+        </div>
+
+        <!-- Cartão 3: A Equipe Campeã -->
+        <div class="p-4 bg-[#050811] border-2 border-amber-400 shadow-[6px_6px_0px_#d97706]">
+          <div class="w-full h-48 bg-slate-900 border border-slate-700 overflow-hidden mb-3 flex flex-col items-center justify-center p-4 text-center">
+            <span class="text-5xl block mb-2">🏆</span>
+            <span class="font-pixel text-xs text-amber-300">EQUIPE CATAVENTO</span>
+            <span class="font-mono text-xs text-slate-400 mt-1">1º Lugar Pleno • UFPI 2026</span>
+          </div>
+          <span class="font-pixel text-[9px] text-amber-300 block mb-1">QUADRO DE HONRA</span>
+          <h3 class="mb-2 text-white font-bold">Integrantes Oficiais</h3>
+          <p class="text-xs font-mono text-slate-400">
+            Mayan Sousa dos Santos, Ravi Pires Ribeiro e Rubuão Alves de Brito sob orientação técnica do Prof. Luis Felipe Patrocinio.
+          </p>
+        </div>
 
       </div>
 
-      <!-- ABA 1: GODOT GDSCRIPT -->
-      <div id="tab-godot" class="p-5 font-mono text-xs md:text-sm overflow-x-auto bg-brand-surface text-slate-200 leading-relaxed">
-        <pre><code><span class="text-purple-400">func</span> <span class="text-blue-400">testar_lanterna</span>(direcao):
-	<span class="text-slate-500"># Efeitos visuais e sonoros da lanterna acendendo</span>
+      <!-- Cartuchos de Download & Links Oficiais -->
+      <div class="p-6 bg-[#050811] border-2 border-brand-cyan shadow-[8px_8px_0px_#0284c7]">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-0.5 bg-brand-cyan text-[#050811] font-pixel text-[9px] font-bold mb-2">
+              DOCUMENTAÇÃO CONFIDENCIAL
+            </div>
+            <h3 class="mb-1 text-white">
+              Relatório Técnico & Repositório Oficial do Projeto
+            </h3>
+            <p class="font-mono text-xs text-slate-300">
+              Acesse o código-fonte completo na Godot Engine 4 e o firmware em C++ do ESP32 documentados.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="https://github.com/rubual/compet2026-asssombrado" target="_blank" rel="noopener noreferrer" 
+              class="retro-btn-cyan px-5 py-3 flex items-center gap-2">
+              <span>⚡ REPOSITÓRIO GITHUB</span>
+            </a>
+            <button onclick="downloadTechnicalSheet()" class="retro-btn-dark px-5 py-3 flex items-center gap-2">
+              <span>📄 FICHA TÉCNICA (PDF)</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SEÇÃO 6: RAIO-X DO CÓDIGO FONTE (IDE RETRÔ)-->
+  <!-- ========================================== -->
+  <section id="codigo" class="py-16 md:py-24 border-b-2 border-brand-cyan bg-[#050811]">
+    <div class="max-w-6xl mx-auto px-4">
+      
+      <div class="mb-8 text-center md:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-cyan text-[#050811] font-pixel text-xs border border-white mb-3">
+          💻 CÓDIGO FONTE OFICIAL DO PROJETO
+        </div>
+        <h2 class="mb-2">
+          INSPEÇÃO DE SOFTWARE E FIRMWARE REAL
+        </h2>
+        <p class="text-sm md:text-base font-mono text-slate-300 max-w-3xl">
+          Trechos reais extraídos diretamente dos arquivos <code>main.gd</code> da Godot 4 e <code>main.cpp</code> do microcontrolador ESP32.
+        </p>
+      </div>
+
+      <!-- Terminal / IDE Retrô -->
+      <div class="border-4 border-brand-cyan shadow-[10px_10px_0px_#0284c7] bg-[#070b19]">
+        
+        <!-- Barra de Abas da IDE -->
+        <div class="p-3 bg-[#050811] border-b-2 border-brand-cyan flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+          
+          <div class="flex items-center gap-2">
+            <button onclick="switchCodeTab('godot')" id="tab-btn-godot" 
+              class="px-3 py-1.5 bg-brand-cyan text-[#050811] font-bold border-2 border-white transition-all">
+              main.gd (Godot 4 GDScript)
+            </button>
+            <button onclick="switchCodeTab('esp32')" id="tab-btn-esp32" 
+              class="px-3 py-1.5 bg-[#070b19] text-slate-400 border border-slate-700 hover:text-white transition-all">
+              main.cpp (ESP32 C++ BLE)
+            </button>
+          </div>
+
+          <button onclick="copyCurrentCode()" class="px-3 py-1 bg-[#070b19] border border-slate-700 text-slate-300 hover:text-brand-cyan font-mono text-xs">
+            <span id="copy-btn-text">Copiar Trecho</span>
+          </button>
+
+        </div>
+
+        <!-- ABA 1: GODOT GDSCRIPT -->
+        <div id="code-godot" class="p-5 font-mono text-xs md:text-sm overflow-x-auto bg-[#070b19] text-slate-200 leading-relaxed">
+          <pre><code><span class="text-purple-400">func</span> <span class="text-blue-400">testar_lanterna</span>(direcao):
+	<span class="text-slate-500"># Efeitos visuais e sonoros da lanterna física acendendo no setor</span>
 	flash_luz.color.a = <span class="text-amber-400">0.4</span>
 	som_lanterna.play()
 
-	<span class="text-slate-500"># Varre os inimigos ativos na sala</span>
+	<span class="text-slate-500"># Varre os inimigos ativos na sala escura</span>
 	<span class="text-purple-400">for</span> i <span class="text-purple-400">in</span> range(inimigos_ativos.size() - <span class="text-amber-400">1</span>, -<span class="text-amber-400">1</span>, -<span class="text-amber-400">1</span>):
 		<span class="text-purple-400">var</span> inimigo = inimigos_ativos[i]
 
-		<span class="text-slate-500"># Ignora se não estiver na direção iluminada</span>
+		<span class="text-slate-500"># Ignora se não estiver na direção iluminada pela lanterna</span>
 		<span class="text-purple-400">if</span> inimigo.posicao != direcao:
 			<span class="text-purple-400">continue</span>
 
-		<span class="text-red-400"># A PEGADINHA: Apontar para o esqueleto falso é Game Over imediato!</span>
+		<span class="text-red-400"># A PEGADINHA: Apontar a luz para o Inimigo Falso é derrota imediata!</span>
 		<span class="text-purple-400">if</span> inimigo.tipo == <span class="text-green-300">"falso"</span>:
-			print(<span class="text-red-300">"APONTOU PARA O FALSO!"</span>)
-			game_over() <span class="text-slate-500"># "PEGOU NO CATAVENTO!"</span>
+			print(<span class="text-red-300">"PEGOU NO CATAVENTO! APONTOU PARA O FALSO!"</span>)
+			game_over() <span class="text-slate-500"># Dispara o jumpscare do bocudo</span>
 			<span class="text-purple-400">return</span>
 
-		<span class="text-cyan-400"># Fantasmas comuns são exorcizados com a luz</span>
-		print(<span class="text-green-300">"MATOU:"</span>, inimigo.tipo)
+		<span class="text-cyan-400"># Fantasmas normais são dissipados e exorcizados com a luz</span>
+		print(<span class="text-green-300">"EXORCIZADO:"</span>, inimigo.tipo)
 		som_inimigo_derrotado.play()
 		flash_luz.color = Color(<span class="text-amber-400">0.8</span>, <span class="text-amber-400">1.0</span>, <span class="text-amber-400">0.8</span>, <span class="text-amber-400">0.6</span>)
 
 		inimigo.node.queue_free()
 		inimigos_ativos.remove_at(i)
 		<span class="text-purple-400">return</span></code></pre>
-      </div>
+        </div>
 
-      <!-- ABA 2: ESP32 C++ -->
-      <div id="tab-esp32" class="p-5 font-mono text-xs md:text-sm overflow-x-auto bg-brand-surface text-slate-200 leading-relaxed hidden">
-        <pre><code><span class="text-purple-400">#include</span> <span class="text-green-300">&lt;Arduino.h&gt;</span>
+        <!-- ABA 2: ESP32 C++ -->
+        <div id="code-esp32" class="p-5 font-mono text-xs md:text-sm overflow-x-auto bg-[#070b19] text-slate-200 leading-relaxed hidden">
+          <pre><code><span class="text-purple-400">#include</span> <span class="text-green-300">&lt;Arduino.h&gt;</span>
 <span class="text-purple-400">#include</span> <span class="text-green-300">&lt;BleGamepad.h&gt;</span>
 
+<span class="text-slate-500">// Emula um Gamepad Bluetooth sem fio oficial</span>
 BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span class="text-green-300">"Catavento"</span>, <span class="text-amber-400">100</span>);
 
-<span class="text-slate-500">// Pinos digitais conectados aos divisores de tensão de 10kΩ</span>
-<span class="text-purple-400">const</span> <span class="text-purple-400">int</span> ldrEsquerda = <span class="text-amber-400">15</span>;
-<span class="text-purple-400">const</span> <span class="text-purple-400">int</span> ldrCentro   = <span class="text-amber-400">2</span>;
-<span class="text-purple-400">const</span> <span class="text-purple-400">int</span> ldrDireita  = <span class="text-amber-400">4</span>;
+<span class="text-slate-500">// Pinos digitais conectados aos Divisores de Tensão com resistor de 10kΩ</span>
+<span class="text-purple-400">const</span> <span class="text-purple-400">int</span> ldrEsquerda = <span class="text-amber-400">15</span>;  <span class="text-slate-500">// Setor Esquerdo da Mansão</span>
+<span class="text-purple-400">const</span> <span class="text-purple-400">int</span> ldrCentro   = <span class="text-amber-400">2</span>;   <span class="text-slate-500">// Corredor Central</span>
+<span class="text-purple-400">const</span> <span class="text-purple-400">int</span> ldrDireita  = <span class="text-amber-400">4</span>;   <span class="text-slate-500">// Janela Direita</span>
 
 <span class="text-purple-400">void</span> <span class="text-blue-400">setup</span>() {
   Serial.begin(<span class="text-amber-400">115200</span>);
@@ -668,11 +1012,11 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
   pinMode(ldrDireita, INPUT);
 
   bleGamepad.begin();
-  Serial.println(<span class="text-green-300">"ESP32 iniciado. Aguardando Bluetooth..."</span>);
+  Serial.println(<span class="text-green-300">"ESP32 Catavento pronto. Aguardando emparelhamento BLE..."</span>);
 }
 
 <span class="text-purple-400">void</span> <span class="text-blue-400">loop</span>() {
-  <span class="text-slate-500">// Leitura instantânea (HIGH = Luz da lanterna presente)</span>
+  <span class="text-slate-500">// Leitura instantânea (HIGH = Facho de luz no tubo colimador)</span>
   <span class="text-purple-400">bool</span> estadoEsq = digitalRead(ldrEsquerda);
   <span class="text-purple-400">bool</span> estadoCen = digitalRead(ldrCentro);
   <span class="text-purple-400">bool</span> estadoDir = digitalRead(ldrDireita);
@@ -688,44 +1032,48 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
     <span class="text-purple-400">else</span>                   bleGamepad.release(BUTTON_3);
   }
   
-  delay(<span class="text-amber-400">50</span>);
+  delay(<span class="text-amber-400">20</span>); <span class="text-slate-500">// Amostragem a 50Hz (latência de 20ms)</span>
 }</code></pre>
+        </div>
+
       </div>
 
     </div>
-
   </section>
 
   <!-- ========================================== -->
-  <!-- SEÇÃO 6: ESTANDE DA FEIRA DE ROBÓTICA & QR -->
+  <!-- SEÇÃO 7: WIDGET DA FEIRA DE ROBÓTICA CEV   -->
   <!-- ========================================== -->
-  <section id="estande" class="py-16 md:py-24 border-t border-brand-border bg-brand-base text-center">
+  <section id="feira" class="py-16 md:py-24 border-b-2 border-brand-cyan bg-[#070b19] text-center">
     <div class="max-w-2xl mx-auto px-4">
       
-      <span class="font-mono text-xs text-amber-400 tracking-wider uppercase block mb-2">Visite Nosso Estande</span>
-      <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">
-        Feira de Robótica InovaCEV
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-400 text-[#050811] font-pixel text-xs border border-white mb-3">
+        🎪 FEIRA DE ROBÓTICA INOVACEV
+      </div>
+      <h2 class="mb-3">
+        VISITE NOSSO ESTANDE NESTA SEXTA-FEIRA!
       </h2>
-      <p class="text-sm md:text-base text-slate-300 max-w-xl mx-auto mb-8">
-        Aponte a câmera do seu celular para o QR Code abaixo para abrir esta documentação, conferir o repositório e testar a lanterna física ao vivo com a nossa equipe!
+      <p class="text-sm md:text-base font-mono text-slate-300 mb-8">
+        Aponte a câmera do celular para o QR Code abaixo para abrir esta cápsula do tempo no seu smartphone e testar a lanterna real com a nossa equipe!
       </p>
 
-      <!-- QR Code -->
-      <div class="inline-block p-4 bg-white rounded-2xl shadow-xl mb-6">
+      <!-- QR Code com Alto Contraste -->
+      <div class="inline-block p-4 bg-white border-4 border-brand-cyan shadow-[8px_8px_0px_#0284c7] mb-6">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;data=https://luisfpatrocinio.github.io/compet2026-asssombrado/" 
           alt="QR Code da Apresentação" 
-          class="w-48 h-48 md:w-52 md:h-52 mx-auto pixelated">
-        <span class="text-[11px] font-mono font-semibold qr-badge block mt-2">luisfpatrocinio.github.io</span>
+          class="w-48 h-48 md:w-56 md:h-56 mx-auto pixelated">
+        <span class="text-xs font-mono font-bold qr-badge block mt-2">
+          luisfpatrocinio.github.io/compet2026-asssombrado
+        </span>
       </div>
 
-      <!-- Links Rápidos -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 font-mono text-xs">
+      <div class="flex flex-wrap items-center justify-center gap-3 font-mono text-xs">
         <a href="https://luisfpatrocinio.github.io/compet2026-asssombrado/" target="_blank" rel="noopener noreferrer" 
-          class="w-full sm:w-auto px-6 py-3 rounded-lg bg-brand-cyan hover:bg-sky-400 text-brand-black font-semibold transition-all">
-          Abrir Link no Navegador
+          class="retro-btn-cyan px-6 py-3">
+          ABRIR PÁGINA DIRETA
         </a>
-        <button onclick="copyProjectLink()" class="w-full sm:w-auto px-6 py-3 rounded-lg bg-brand-surface hover:bg-brand-elevated border border-brand-border text-slate-200 transition-all">
-          Copiar URL da Página
+        <button onclick="copyProjectLink()" class="retro-btn-dark px-6 py-3">
+          COPIAR LINK COMPLETO
         </button>
       </div>
 
@@ -733,33 +1081,277 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
   </section>
 
   <!-- ========================================== -->
-  <!-- FOOTER LIMPO & CRÉDITOS                    -->
+  <!-- FOOTER RETRÔ BRUTALISTA                    -->
   <!-- ========================================== -->
-  <footer class="py-12 border-t border-brand-border bg-brand-black text-xs text-slate-400 font-mono">
+  <footer class="py-10 bg-[#050811] font-mono text-xs text-slate-400">
     <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
       
       <div class="flex items-center gap-2">
-        <img src="assets/ghost_normal.png" alt="Ghost" class="w-5 h-5 pixelated">
-        <span class="font-bold text-white">AsSsombrado (2026)</span>
+        <span class="w-2.5 h-2.5 bg-brand-cyan inline-block"></span>
+        <span class="text-white font-bold">AsSsombrado // Equipe Catavento</span>
         <span>•</span>
         <span>Colégio CEV</span>
       </div>
 
       <p class="text-center md:text-right text-slate-400">
-        Equipe Catavento: Mayan Sousa • Ravi Pires • Rubuão Alves • Orientador: Prof. Luis Felipe Patrocinio
+        Mayan Sousa • Ravi Pires • Rubuão Alves • Orientador: Prof. Luis Felipe Patrocinio
       </p>
 
     </div>
   </footer>
 
   <!-- ========================================== -->
-  <!-- JAVASCRIPT: Three.js 3D & Abas             -->
+  <!-- SCRIPT: SIMULADOR WEB & THREE.JS 3D        -->
   <!-- ========================================== -->
   <script>
     const GITHUB_PAGES_URL = "https://luisfpatrocinio.github.io/compet2026-asssombrado/";
 
     // ========================================================
-    // 1. MAQUETE 3D INTERATIVA (Three.js)
+    // 1. ÁUDIO DO JOGO (Web Audio / Arquivos)
+    // ========================================================
+    let soundEnabled = true;
+    const sfxFlashlight = new Audio('assets/audio/lanterna.mp3');
+    const sfxScream = new Audio('assets/audio/scream.mp3');
+    const sfxVictory = new Audio('assets/audio/vitoria.mp3');
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('btn-sound').textContent = soundEnabled ? '🔊 Áudio: ON' : '🔇 Áudio: OFF';
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        if (type === 'flashlight') {
+          sfxFlashlight.currentTime = 0;
+          sfxFlashlight.play().catch(() => {});
+        } else if (type === 'scream') {
+          sfxScream.currentTime = 0;
+          sfxScream.play().catch(() => {});
+        } else if (type === 'victory') {
+          sfxVictory.currentTime = 0;
+          sfxVictory.play().catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    // ========================================================
+    // 2. SIMULADOR DO QUARTO ESCURO & CIRCUITOS ESP32
+    // ========================================================
+    let simScore = 0;
+    let simKills = 0;
+    let simGameOver = false;
+    let activeEnemy = null; // { sector: 'esquerda'|'centro'|'direita', type: 'normal'|'rapido'|'falso' }
+    let spawnTimer = null;
+
+    const ENEMY_TYPES = [
+      { type: 'normal', name: 'APARIÇÃO', tagClass: 'text-amber-300 border-amber-400', img: 'assets/ghost_normal.png' },
+      { type: 'rapido', name: 'ESPECTRO VELOZ', tagClass: 'text-brand-pink border-brand-pink', img: 'assets/ghost_rapido.png' },
+      { type: 'lento',  name: 'ALMA ERRANTE', tagClass: 'text-brand-cyan border-brand-cyan', img: 'assets/ghost_lento.png' },
+      { type: 'falso',  name: '⚠️ FALSO', tagClass: 'text-red-400 border-red-500', img: 'assets/inimigo_falso.png' }
+    ];
+
+    function simSpawnEnemy(forceType = null) {
+      if (simGameOver) return;
+      
+      // Limpa os três setores
+      ['esq', 'cen', 'dir'].forEach(s => {
+        const cont = document.getElementById(`ghost-container-${s}`);
+        if (cont) cont.classList.add('opacity-0');
+      });
+
+      const sectors = ['esquerda', 'centro', 'direita'];
+      const chosenSector = sectors[Math.floor(Math.random() * sectors.length)];
+      
+      let enemy = null;
+      if (forceType === 'falso') {
+        enemy = ENEMY_TYPES.find(e => e.type === 'falso');
+      } else {
+        // 25% de chance de ser o Inimigo Falso
+        enemy = ENEMY_TYPES[Math.floor(Math.random() * ENEMY_TYPES.length)];
+      }
+
+      activeEnemy = {
+        sector: chosenSector,
+        type: enemy.type
+      };
+
+      const secShort = chosenSector === 'esquerda' ? 'esq' : (chosenSector === 'centro' ? 'cen' : 'dir');
+      const container = document.getElementById(`ghost-container-${secShort}`);
+      const img = document.getElementById(`ghost-img-${secShort}`);
+      const tag = document.getElementById(`ghost-tag-${secShort}`);
+
+      if (container && img && tag) {
+        img.src = enemy.img;
+        tag.textContent = enemy.name;
+        tag.className = `mt-2 px-2 py-0.5 bg-[#050811] border font-pixel text-[9px] ${enemy.tagClass}`;
+        container.classList.remove('opacity-0');
+      }
+
+      document.getElementById('sim-status').textContent = 'INCURSÃO!';
+      document.getElementById('sim-status').className = 'text-amber-300 animate-pulse';
+    }
+
+    function simForceSpawn() {
+      if (simGameOver) simResetGame();
+      simSpawnEnemy();
+    }
+
+    function simForceFake() {
+      if (simGameOver) simResetGame();
+      simSpawnEnemy('falso');
+    }
+
+    function triggerSector(sector) {
+      if (simGameOver) return;
+
+      playSound('flashlight');
+
+      // 1. Atualiza visualmente o facho de luz no monitor
+      const lightBeam = document.getElementById('sim-light-beam');
+      const positions = {
+        esquerda: '20% 50%',
+        centro:   '50% 50%',
+        direita:  '80% 50%'
+      };
+      if (lightBeam) {
+        lightBeam.style.background = `radial-gradient(circle at ${positions[sector]}, rgba(255,255,225,0.92) 0%, rgba(56,189,248,0.45) 40%, rgba(5,8,17,0) 75%)`;
+        lightBeam.style.opacity = '1';
+        setTimeout(() => { lightBeam.style.opacity = '0'; }, 250);
+      }
+
+      // 2. Atualiza a telemetria do hardware ESP32
+      updateHwDisplay(sector);
+
+      // 3. Verifica o acerto com o inimigo
+      if (activeEnemy && activeEnemy.sector === sector) {
+        if (activeEnemy.type === 'falso') {
+          // Jumpscare Game Over!
+          simTriggerGameOver();
+        } else {
+          // Exorcismo bem sucedido!
+          simExorciseSuccess(sector);
+        }
+      }
+    }
+
+    function updateHwDisplay(activeSector) {
+      const config = {
+        esquerda: { pin: 'esq', button: 'BUTTON_1' },
+        centro:   { pin: 'cen', button: 'BUTTON_2' },
+        direita:  { pin: 'dir', button: 'BUTTON_3' }
+      };
+
+      Object.keys(config).forEach(sec => {
+        const item = config[sec];
+        const isTarget = (sec === activeSector);
+
+        const badge = document.getElementById(`hw-badge-${item.pin}`);
+        const volt = document.getElementById(`hw-volt-${item.pin}`);
+        const bar = document.getElementById(`hw-bar-${item.pin}`);
+        const ble = document.getElementById(`hw-ble-${item.pin}`);
+
+        if (isTarget) {
+          badge.textContent = 'HIGH (1)';
+          badge.className = 'font-mono text-[10px] px-2 py-0.5 bg-green-500 text-black font-bold border border-white';
+          volt.textContent = '3.28 V';
+          bar.style.width = '100%';
+          ble.textContent = `${item.button}: PRESSED [TX]`;
+          ble.className = 'text-green-400 font-bold';
+
+          setTimeout(() => {
+            badge.textContent = 'LOW (0)';
+            badge.className = 'font-mono text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 font-bold border border-slate-700';
+            volt.textContent = '0.22 V';
+            bar.style.width = '7%';
+            ble.textContent = `${item.button}: IDLE`;
+            ble.className = 'text-slate-400 font-bold';
+          }, 350);
+        }
+      });
+    }
+
+    function simExorciseSuccess(sector) {
+      playSound('victory');
+      simScore += 100;
+      simKills += 1;
+
+      document.getElementById('sim-score').textContent = String(simScore).padStart(3, '0');
+      document.getElementById('sim-kills').textContent = simKills;
+
+      // Flash verde de vitória
+      const flash = document.getElementById('sim-flash-exorcise');
+      if (flash) {
+        flash.style.opacity = '1';
+        setTimeout(() => { flash.style.opacity = '0'; }, 180);
+      }
+
+      // Esconde o fantasma do setor
+      const secShort = sector === 'esquerda' ? 'esq' : (sector === 'centro' ? 'cen' : 'dir');
+      const container = document.getElementById(`ghost-container-${secShort}`);
+      if (container) container.classList.add('opacity-0');
+
+      activeEnemy = null;
+      document.getElementById('sim-status').textContent = 'EXORCIZADO!';
+      document.getElementById('sim-status').className = 'text-green-400 font-bold';
+
+      // Dispara o próximo após 1.5s
+      clearTimeout(spawnTimer);
+      spawnTimer = setTimeout(simSpawnEnemy, 1400);
+    }
+
+    function simTriggerGameOver() {
+      simGameOver = true;
+      playSound('scream');
+
+      // Treme a tela
+      const screen = document.getElementById('sim-crt-screen');
+      screen.classList.add('shake-active');
+      setTimeout(() => { screen.classList.remove('shake-active'); }, 1100);
+
+      // Exibe overlay de Jumpscare
+      const jumpscare = document.getElementById('sim-jumpscare-overlay');
+      if (jumpscare) {
+        jumpscare.classList.remove('opacity-0', 'pointer-events-none');
+        jumpscare.classList.add('opacity-100');
+      }
+
+      document.getElementById('sim-status').textContent = 'GAME OVER';
+      document.getElementById('sim-status').className = 'text-red-500 font-bold';
+    }
+
+    function simResetGame() {
+      simGameOver = false;
+      const jumpscare = document.getElementById('sim-jumpscare-overlay');
+      if (jumpscare) {
+        jumpscare.classList.add('opacity-0', 'pointer-events-none');
+        jumpscare.classList.remove('opacity-100');
+      }
+      simSpawnEnemy();
+    }
+
+    function previewSector(sector) {
+      // Prévia sutil ao passar o mouse
+    }
+
+    function clearPreview() {
+      //
+    }
+
+    // Teclas de atalho A, S, D para o simulador
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+      if (key === 'a') triggerSector('esquerda');
+      else if (key === 's') triggerSector('centro');
+      else if (key === 'd') triggerSector('direita');
+    });
+
+    // Inicia o primeiro inimigo após carregar
+    setTimeout(simSpawnEnemy, 1000);
+
+
+    // ========================================================
+    // 3. MAQUETE 3D VIRTUAL (Three.js)
     // ========================================================
     let scene, camera, renderer, controls;
     let flashlightGroup, beamGroup, lightCone, lightCore, lightSpot, lightPuddle;
@@ -775,7 +1367,7 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
     const LDR_POSITIONS = {
       esquerda: { x: -3.2, y: 0.9, z: 0.5, gpio: 'GPIO 15', name: 'Sensor Esquerda', color: 0x38bdf8 },
       centro:   { x: 0.0,  y: 0.9, z: 1.5, gpio: 'GPIO 2',  name: 'Sensor Centro',   color: 0xf59e0b },
-      direita:  { x: 3.2,  y: 0.9, z: 0.5, gpio: 'GPIO 4',  name: 'Sensor Direita',  color: 0xec4899 }
+      direita:  { x: 3.2,  y: 0.9, z: 0.5, gpio: 'GPIO 4',  name: 'Sensor Direita',  color: 0xff2a85 }
     };
 
     function init3D() {
@@ -783,14 +1375,10 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       const width = container.offsetWidth || container.clientWidth;
       const height = container.offsetHeight || container.clientHeight;
 
-      // Cena com fundo escuro sólido (sem névoa artificial excessiva)
       scene = new THREE.Scene();
-
-      // Câmera
       camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
       camera.position.set(0, 5.5, 10.5);
 
-      // Renderer
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -798,7 +1386,6 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
-      // OrbitControls
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.06;
@@ -807,7 +1394,6 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       controls.maxDistance = 20;
       controls.target.copy(targetLookAt);
 
-      // Iluminação de Estúdio Limpa
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
       scene.add(ambientLight);
 
@@ -820,7 +1406,6 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       fillLight.position.set(-6, 8, -4);
       scene.add(fillLight);
 
-      // Elementos do Cenário
       createPedestal();
       createESP32();
       createLDRAssembly();
@@ -831,21 +1416,19 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
     }
 
     function createPedestal() {
-      // Base sólida de alumínio/ardósia
       const baseGeo = new THREE.CylinderGeometry(5.4, 5.6, 0.35, 48);
       const baseMat = new THREE.MeshStandardMaterial({
-        color: 0x131620,
-        roughness: 0.5,
-        metalness: 0.5
+        color: 0x070b19,
+        roughness: 0.6,
+        metalness: 0.4
       });
       const base = new THREE.Mesh(baseGeo, baseMat);
       base.position.y = -0.18;
       base.receiveShadow = true;
       scene.add(base);
 
-      // Anel discreto de medição
       const ringGeo = new THREE.RingGeometry(5.1, 5.25, 48);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x262b3d, side: THREE.DoubleSide });
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = -Math.PI / 2;
       ring.position.y = 0.01;
@@ -856,42 +1439,36 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       const espGroup = new THREE.Group();
       espGroup.position.set(0, 0.15, -1.8);
 
-      // PCB
       const pcbGeo = new THREE.BoxGeometry(2.2, 0.12, 3.8);
       const pcbMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 });
       const pcb = new THREE.Mesh(pcbGeo, pcbMat);
       pcb.castShadow = true;
       espGroup.add(pcb);
 
-      // Blindagem Metálica (ESP-WROOM-32)
       const shieldGeo = new THREE.BoxGeometry(1.6, 0.18, 1.8);
       const shieldMat = new THREE.MeshStandardMaterial({ color: 0xd1d5db, metalness: 0.85, roughness: 0.2 });
       const shield = new THREE.Mesh(shieldGeo, shieldMat);
       shield.position.set(0, 0.14, 0.4);
       espGroup.add(shield);
 
-      // Antena PCB
       const antGeo = new THREE.BoxGeometry(1.4, 0.02, 0.8);
       const antMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.6 });
       const ant = new THREE.Mesh(antGeo, antMat);
       ant.position.set(0, 0.08, -1.3);
       espGroup.add(ant);
 
-      // Conector Micro-USB
       const usbGeo = new THREE.BoxGeometry(0.7, 0.22, 0.5);
       const usbMat = new THREE.MeshStandardMaterial({ color: 0x9ca3af, metalness: 0.9, roughness: 0.1 });
       const usb = new THREE.Mesh(usbGeo, usbMat);
       usb.position.set(0, 0.15, 1.8);
       espGroup.add(usb);
 
-      // LED de Status BLE
       const ledGeo = new THREE.BoxGeometry(0.12, 0.1, 0.12);
       const ledMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
       const led = new THREE.Mesh(ledGeo, ledMat);
       led.position.set(0.6, 0.12, 1.2);
       espGroup.add(led);
 
-      // Pinos
       const pinMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.8 });
       for (let side of [-1, 1]) {
         const headerGeo = new THREE.BoxGeometry(0.2, 0.4, 3.4);
@@ -909,19 +1486,17 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
         const towerGroup = new THREE.Group();
         towerGroup.position.set(data.x, 0, data.z);
 
-        // O sensor deve estar orientado DIRETAMENTE para a lanterna!
+        // O tubo óptico deve estar apontado DIRETAMENTE para a lanterna!
         const dx = FLASHLIGHT_POS.x - data.x;
         const dz = FLASHLIGHT_POS.z - data.z;
         towerGroup.rotation.y = Math.atan2(dx, dz);
 
-        // Base do Sensor
         const postGeo = new THREE.CylinderGeometry(0.25, 0.35, 0.7, 16);
         const postMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5 });
         const post = new THREE.Mesh(postGeo, postMat);
         post.position.y = 0.35;
         towerGroup.add(post);
 
-        // Tubo Colimador (Abertura para a frente em +Z, fundo fechado em -Z)
         const tubeGeo = new THREE.CylinderGeometry(0.4, 0.4, 1.0, 24, 1, true);
         const tubeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.7, side: THREE.DoubleSide });
         const tube = new THREE.Mesh(tubeGeo, tubeMat);
@@ -929,14 +1504,14 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
         tube.rotation.x = Math.PI / 2;
         towerGroup.add(tube);
 
-        // Tampa traseira do tubo colimador (fundo opaco)
+        // Tampa traseira
         const capGeo = new THREE.CircleGeometry(0.4, 24);
         const capMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
         const cap = new THREE.Mesh(capGeo, capMat);
         cap.position.set(0, 0.9, -0.5);
         towerGroup.add(cap);
 
-        // Pastilha LDR no fundo interno do tubo
+        // Pastilha LDR
         const ldrDiskGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.08, 16);
         const ldrDiskMat = new THREE.MeshStandardMaterial({ 
           color: data.color, 
@@ -981,20 +1556,16 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       
       const grad = ctx.createLinearGradient(0, 256, 0, 0);
       grad.addColorStop(0.0, 'rgba(255, 255, 235, 0.95)');
-      grad.addColorStop(0.15, 'rgba(255, 245, 170, 0.6)');
-      grad.addColorStop(0.5, 'rgba(255, 230, 120, 0.22)');
-      grad.addColorStop(0.85, 'rgba(255, 220, 90, 0.05)');
+      grad.addColorStop(0.15, 'rgba(255, 245, 170, 0.65)');
+      grad.addColorStop(0.6, 'rgba(255, 230, 120, 0.25)');
       grad.addColorStop(1.0, 'rgba(255, 220, 90, 0.0)');
 
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 128, 256);
-      
-      const texture = new THREE.CanvasTexture(canvas);
-      return texture;
+      return new THREE.CanvasTexture(canvas);
     }
 
     function createFlashlight() {
-      // Suporte de bancada
       const standGroup = new THREE.Group();
       standGroup.position.set(0, 0, 3.8);
 
@@ -1018,11 +1589,10 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
 
       scene.add(standGroup);
 
-      // Lanterna articulada
       flashlightGroup = new THREE.Group();
       flashlightGroup.position.set(0, 1.0, 3.8);
 
-      // Cabo da lanterna (estende para trás em -Z)
+      // Cabo
       const handleGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.9, 24);
       handleGeo.rotateX(Math.PI / 2);
       handleGeo.translate(0, 0, -0.35);
@@ -1030,7 +1600,7 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       const handle = new THREE.Mesh(handleGeo, handleMat);
       flashlightGroup.add(handle);
 
-      // Cabeça da lanterna (alarga para a frente em +Z)
+      // Cabeça
       const headGeo = new THREE.CylinderGeometry(0.24, 0.14, 0.45, 24);
       headGeo.rotateX(Math.PI / 2);
       headGeo.translate(0, 0, 0.35);
@@ -1038,22 +1608,20 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       const head = new THREE.Mesh(headGeo, headMat);
       flashlightGroup.add(head);
 
-      // Bocal
+      // Bocal e Lente
       const rimGeo = new THREE.TorusGeometry(0.23, 0.025, 12, 24);
       const rimMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, metalness: 0.9 });
       const rim = new THREE.Mesh(rimGeo, rimMat);
       rim.position.z = 0.575;
       flashlightGroup.add(rim);
 
-      // Lente
       const lensGeo = new THREE.CircleGeometry(0.22, 24);
       const lensMat = new THREE.MeshBasicMaterial({ color: 0xfffde7 });
       const lens = new THREE.Mesh(lensGeo, lensMat);
       lens.position.z = 0.58;
       flashlightGroup.add(lens);
 
-      // Facho de luz volumétrico contido em beamGroup
-      // Inicia exatamente no bocal/lente (z=0.58) e tem comprimento unitário 1.0 ao longo de +Z
+      // Facho volumétrico
       beamGroup = new THREE.Group();
       beamGroup.position.set(0, 0, 0.58);
 
@@ -1073,7 +1641,7 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       lightCone = new THREE.Mesh(beamGeo, beamMat);
       beamGroup.add(lightCone);
 
-      // Núcleo brilhante (comprimento unitário 1.0)
+      // Núcleo brilhante
       const coreGeo = new THREE.CylinderGeometry(0.18, 0.07, 1.0, 20, 1, true);
       coreGeo.translate(0, 0.5, 0);
       coreGeo.rotateX(Math.PI / 2);
@@ -1127,24 +1695,26 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
 
       ['esq', 'cen', 'dir'].forEach(b => {
         const btn = document.getElementById(`btn-aim-${b}`);
-        if (btn) btn.classList.remove('bg-brand-elevated', 'border-brand-cyan', 'font-bold', 'bg-amber-500/20');
+        if (btn) btn.className = 'px-3 py-1.5 bg-[#050811] border-2 border-slate-700 text-slate-300 font-bold hover:border-white transition-all';
       });
 
       const btnMap = { esquerda: 'btn-aim-esq', centro: 'btn-aim-cen', direita: 'btn-aim-dir' };
       const activeBtn = document.getElementById(btnMap[pos]);
-      if (activeBtn) activeBtn.classList.add('font-bold', 'bg-brand-elevated', 'border-brand-cyan');
+      if (activeBtn) {
+        activeBtn.className = (pos === 'centro')
+          ? 'px-3 py-1.5 bg-amber-400 border-2 border-white text-[#050811] font-bold transition-all'
+          : (pos === 'direita'
+            ? 'px-3 py-1.5 bg-brand-pink border-2 border-white text-[#050811] font-bold transition-all'
+            : 'px-3 py-1.5 bg-brand-cyan border-2 border-white text-[#050811] font-bold transition-all');
+      }
 
-      // Centro do tubo do sensor (y = 0.9)
       const sensorPos = new THREE.Vector3(target.x, 0.9, target.z);
       const dummy = new THREE.Object3D();
       dummy.position.copy(flashlightGroup.position);
       dummy.lookAt(sensorPos);
       targetQuaternion.copy(dummy.quaternion);
 
-      // Distância do pivô da lanterna até o centro do sensor
       const dist = flashlightGroup.position.distanceTo(sensorPos);
-      // Subtrai 0.58 (bocal da lanterna) e 0.50 (raio até a boca do tubo)
-      // O facho termina EXATAMENTE na abertura frontal do colimador, sem atravessar o sensor!
       targetBeamLength = Math.max(0.4, dist - 0.58 - 0.50);
 
       if (immediate) {
@@ -1170,31 +1740,31 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
       }
 
       document.getElementById('hud-component-title').textContent = `${target.name.toUpperCase()} ILUMINADO`;
-      document.getElementById('hud-component-desc').textContent = `Facho alinhado diretamente na abertura do colimador. O LDR atingiu o limiar e gerou sinal HIGH.`;
+      document.getElementById('hud-component-desc').textContent = `Facho alinhado diretamente na boca do tubo colimador. O LDR gerou comutação digital HIGH.`;
       document.getElementById('hud-pin-badge').textContent = `${target.gpio} = HIGH`;
-      document.getElementById('hud-status-dot').style.backgroundColor = (pos === 'centro') ? '#f59e0b' : (pos === 'direita' ? '#ec4899' : '#38bdf8');
+      document.getElementById('hud-status-dot').style.backgroundColor = (pos === 'centro') ? '#f59e0b' : (pos === 'direita' ? '#ff2a85' : '#38bdf8');
     }
 
     function focusComponent(type) {
       if (type === 'overview') {
         animateCamera(new THREE.Vector3(0, 5.5, 10.5), new THREE.Vector3(0, 0.5, 0));
-        document.getElementById('hud-component-title').textContent = "VISÃO GERAL DO DISPOSITIVO";
-        document.getElementById('hud-component-desc').textContent = "Base com ESP32 BLE e os 3 sensores LDR colimados montados em leque.";
+        document.getElementById('hud-component-title').textContent = "VISÃO GERAL DA BANCADA";
+        document.getElementById('hud-component-desc').textContent = "Base com ESP32 BLE e os 3 tubos colimadores com sensores ópticos LDR em leque.";
         document.getElementById('hud-pin-badge').textContent = "SISTEMA COMPLETO";
       } else if (type === 'esp32') {
         animateCamera(new THREE.Vector3(0, 3.0, 0.8), new THREE.Vector3(0, 0.2, -1.8));
         document.getElementById('hud-component-title').textContent = "PLACA ESP32 DEVKIT (BLE GAMEPAD)";
-        document.getElementById('hud-component-desc').textContent = "Leituras digitais nos pinos 15, 2 e 4 com o rádio Bluetooth BLE ativo.";
+        document.getElementById('hud-component-desc').textContent = "Pinos digitais 15, 2 e 4 com o rádio Bluetooth BLE ativo.";
         document.getElementById('hud-pin-badge').textContent = "ESP-WROOM-32";
       } else if (type === 'ldrs') {
         animateCamera(new THREE.Vector3(0, 3.2, 4.8), new THREE.Vector3(0, 0.8, 1));
         document.getElementById('hud-component-title').textContent = "TUBOS COLIMADORES E LDRS";
-        document.getElementById('hud-component-desc').textContent = "Câmaras ópticas protegidas contra a luz ambiente da sala de testes.";
+        document.getElementById('hud-component-desc').textContent = "Câmaras ópticas protegidas contra a luz ambiente do auditório da UFPI.";
         document.getElementById('hud-pin-badge').textContent = "3x SENSORES ÓPTICOS";
       } else if (type === 'resistors') {
         animateCamera(new THREE.Vector3(-1.5, 2, 2.5), new THREE.Vector3(-1.8, 0.5, 0.5));
         document.getElementById('hud-component-title').textContent = "DIVISORES DE TENSÃO (10KΩ)";
-        document.getElementById('hud-component-desc').textContent = "Garantem transição abrupta de 0.2V para >3.0V ao receber a lanterna.";
+        document.getElementById('hud-component-desc').textContent = "Convertem a curva contínua em transição CMOS abrupta de 0.2V para >3.0V.";
         document.getElementById('hud-pin-badge').textContent = "PULL-DOWN 10kΩ";
       }
     }
@@ -1250,46 +1820,51 @@ BleGamepad bleGamepad(<span class="text-green-300">"Asssombrado"</span>, <span c
     window.addEventListener('DOMContentLoaded', init3D);
 
     // ========================================================
-    // 2. ABAS DE CÓDIGO FONTE (IDE)
+    // 4. ABAS DE CÓDIGO FONTE (IDE)
     // ========================================================
-    let activeTab = 'godot';
-    function switchTab(tab) {
-      activeTab = tab;
-      const tabGodot = document.getElementById('tab-godot');
-      const tabEsp32 = document.getElementById('tab-esp32');
+    function switchCodeTab(tab) {
+      const tabGodot = document.getElementById('code-godot');
+      const tabEsp32 = document.getElementById('code-esp32');
       const btnGodot = document.getElementById('tab-btn-godot');
       const btnEsp32 = document.getElementById('tab-btn-esp32');
 
       if (tab === 'godot') {
         tabGodot.classList.remove('hidden');
         tabEsp32.classList.add('hidden');
-        btnGodot.className = "px-3 py-1.5 rounded-lg bg-brand-elevated border border-brand-cyan text-brand-cyan font-mono text-xs flex items-center gap-2 transition-all font-semibold";
-        btnEsp32.className = "px-3 py-1.5 rounded-lg bg-brand-surface border border-transparent text-slate-400 hover:text-white font-mono text-xs flex items-center gap-2 transition-all";
+        btnGodot.className = "px-3 py-1.5 bg-brand-cyan text-[#050811] font-bold border-2 border-white transition-all";
+        btnEsp32.className = "px-3 py-1.5 bg-[#070b19] text-slate-400 border border-slate-700 hover:text-white transition-all";
       } else {
         tabGodot.classList.add('hidden');
         tabEsp32.classList.remove('hidden');
-        btnEsp32.className = "px-3 py-1.5 rounded-lg bg-brand-elevated border border-purple-400 text-purple-300 font-mono text-xs flex items-center gap-2 transition-all font-semibold";
-        btnGodot.className = "px-3 py-1.5 rounded-lg bg-brand-surface border border-transparent text-slate-400 hover:text-white font-mono text-xs flex items-center gap-2 transition-all";
+        btnEsp32.className = "px-3 py-1.5 bg-brand-pink text-[#050811] font-bold border-2 border-white transition-all";
+        btnGodot.className = "px-3 py-1.5 bg-[#070b19] text-slate-400 border border-slate-700 hover:text-white transition-all";
       }
     }
 
     function copyCurrentCode() {
-      const codeElement = activeTab === 'godot' 
-        ? document.querySelector('#tab-godot code')
-        : document.querySelector('#tab-esp32 code');
-      
-      navigator.clipboard.writeText(codeElement.innerText).then(() => {
-        const copyText = document.getElementById('copy-text');
-        copyText.textContent = "Copiado! ✓";
-        setTimeout(() => copyText.textContent = "Copiar Código", 2000);
+      const isGodot = !document.getElementById('code-godot').classList.contains('hidden');
+      const code = isGodot 
+        ? document.getElementById('code-godot').innerText 
+        : document.getElementById('code-esp32').innerText;
+
+      navigator.clipboard.writeText(code).then(() => {
+        const btnText = document.getElementById('copy-btn-text');
+        btnText.textContent = "✓ Código Copiado!";
+        setTimeout(() => { btnText.textContent = "Copiar Trecho"; }, 2000);
       });
     }
 
     function copyProjectLink() {
       navigator.clipboard.writeText(GITHUB_PAGES_URL).then(() => {
-        alert("Link copiado para a área de transferência:\n" + GITHUB_PAGES_URL);
+        alert("Link oficial copiado para a área de transferência!");
       });
     }
+
+    function downloadTechnicalSheet() {
+      alert("Abrindo o repositório oficial com a documentação técnica da ComPETção 2026.");
+      window.open("https://github.com/rubual/compet2026-asssombrado", "_blank");
+    }
   </script>
+
 </body>
 </html>
