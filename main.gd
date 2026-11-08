@@ -215,7 +215,7 @@ func _configurar_textos():
 		texto_game_over.label_settings.outline_color = Color.BLACK
 		
 	# Estilo da Vitória e Animação de Respiração (Pulsar)
-	texto_vitoria.text = "SOBREVIVEU!!!"
+	texto_vitoria.text = "SOBREVIVEU À NOITE!"
 	if texto_vitoria.label_settings:
 		texto_vitoria.label_settings.font_color = Color(1, 0.8, 0) # Dourado
 		texto_vitoria.label_settings.shadow_color = Color(0, 0, 0, 0.7)
@@ -273,13 +273,13 @@ func _process(delta):
 	var acionou = false
 	var direcao = ""
 
-	if Input.is_key_pressed(KEY_A) or Input.is_action_pressed("ui_left"):
+	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT) or Input.is_action_pressed("ui_left") or Input.is_joy_button_pressed(0, JOY_BUTTON_A):
 		direcao = "esquerda"
 		acionou = true
-	elif Input.is_key_pressed(KEY_S) or Input.is_action_pressed("ui_down"):
+	elif Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP) or Input.is_action_pressed("ui_up") or Input.is_joy_button_pressed(0, JOY_BUTTON_B):
 		direcao = "centro"
 		acionou = true
-	elif Input.is_key_pressed(KEY_D) or Input.is_action_pressed("ui_right"):
+	elif Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT) or Input.is_action_pressed("ui_right") or Input.is_joy_button_pressed(0, JOY_BUTTON_X):
 		direcao = "direita"
 		acionou = true
 
